@@ -176,7 +176,7 @@ export default function CsvUpload({ setDataFrame }: CsvUploadProps) {
 
             <div className="mt-4">
               <h3 className="text-lg font-semibold mb-2">Select Column for Sentiment Analysis:</h3>
-              {csvData.headers.map((header) => (
+              {csvData?.headers.map((header) => (
                 <label key={header} className="flex items-center space-x-2">
                   <input
                     type="radio"
