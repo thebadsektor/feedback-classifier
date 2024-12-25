@@ -19,6 +19,7 @@ export default function CsvUpload({ setDataFrame }: CsvUploadProps) {
   const [selectedColumns, setSelectedColumns] = useState<string[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [processedData, setProcessedData] = useState<Record<string, any>[]>([]);
+  const [sentimentColumn, setSentimentColumn] = useState<string | null>(null);
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.[0];
@@ -93,6 +94,20 @@ export default function CsvUpload({ setDataFrame }: CsvUploadProps) {
     }
   };
 
+  // Function to handle sentiment analysis
+  const handleSentimentAnalysis = () => {
+    if (!sentimentColumn) {
+      alert("Please select a column for sentiment analysis.");
+      return;
+    }
+    // Implement sentiment analysis logic here
+    console.log("Running sentiment analysis on column:", sentimentColumn);
+    // Example: You can access the selected column data like this:
+    const sentimentData = processedData.map(row => row[sentimentColumn]);
+    console.log("Sentiment Data:", sentimentData);
+    // Add your sentiment analysis logic here
+  };
+
   return (
     <div className="w-full p-6 bg-white rounded-lg shadow-md">
       <div className="flex flex-col items-center justify-center min-h-40 gap-4">
@@ -158,6 +173,32 @@ export default function CsvUpload({ setDataFrame }: CsvUploadProps) {
                 ))}
               </tbody>
             </table>
+
+            <div className="mt-4">
+              <h3 className="text-lg font-semibold mb-2">Select Column for Sentiment Analysis:</h3>
+              {csvData.headers.map((header) => (
+                <label key={header} className="flex items-center space-x-2">
+                  <input
+                    type="radio"
+                    name="sentimentColumn"
+                    value={header}
+                    checked={sentimentColumn === header}
+                    onChange={() => setSentimentColumn(header)}
+                    className="rounded border-gray-300"
+                  />
+                  <span className="text-sm">{header}</span>
+                </label>
+              ))}
+            </div>
+
+            <div className="flex justify-center mt-4">
+              <button
+                onClick={handleSentimentAnalysis}
+                className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md transition-colors"
+              >
+                Run Sentiment Analysis
+              </button>
+            </div>
           </div>
         )}
       </div>
