@@ -10,8 +10,10 @@
   },
   "dependencies": {
     "@types/papaparse": "^5.3.15",
+    "danfojs": "^1.1.2",
     "next": "15.1.2",
     "papaparse": "^5.4.1",
+    "plotly.js-dist-min": "^2.35.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
