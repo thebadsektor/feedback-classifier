@@ -20,7 +20,7 @@ const SentimentAnalyzer = () => {
         {
           method: 'POST',
           headers: {
-            Authorization: `Bearer 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`,
+            Authorization: `Bearer ${process.env.NEXT_PUBLIC_HUGGINGFACE_API_KEY}`,
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({ inputs: text }),
@@ -62,8 +62,6 @@ const SentimentAnalyzer = () => {
       setIsLoading(false);
     }
   };  
-
-  console.log('Rendering with sentimentResult:', sentimentResult);
 
   return (
     <div>
