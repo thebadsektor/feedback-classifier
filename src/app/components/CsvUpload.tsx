@@ -1,3 +1,4 @@
+// src
 'use client';
 
 import { ChangeEvent, useState } from 'react';
@@ -5,13 +6,13 @@ import Papa from 'papaparse';
 import { DataFrame } from 'danfojs';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 
-interface CsvData {
-  data: any[];
-  headers: string[];
+interface CsvUploadProps {
+  setDataFrame: (dataFrame: DataFrame | null) => void;
 }
 
-interface CsvUploadProps {
-  setDataFrame: (df: DataFrame | null) => void;
+interface CsvData {
+  data: string[][];
+  headers: string[];
 }
 
 export default function CsvUpload({ setDataFrame }: CsvUploadProps) {
@@ -19,7 +20,7 @@ export default function CsvUpload({ setDataFrame }: CsvUploadProps) {
   const [csvData, setCsvData] = useState<CsvData | null>(null);
   const [selectedColumns, setSelectedColumns] = useState<string[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [processedData, setProcessedData] = useState<Record<string, any>[]>([]);
+  const [processedData, setProcessedData] = useState<Record<string, string | number>[]>([]);
   const [sentimentColumn, setSentimentColumn] = useState<string | null>(null);
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -36,9 +37,8 @@ export default function CsvUpload({ setDataFrame }: CsvUploadProps) {
     setIsProcessing(true);
     Papa.parse(file, {
       complete: (results) => {
-        console.log('Parsed CSV Data:', results.data);
         const headers = results.data[0] as string[];
-        const rows = results.data.slice(1);
+        const rows = results.data.slice(1) as string[][];
 
         if (!headers || rows.length === 0) {
           alert('The CSV file appears to be empty or invalid.');
@@ -73,7 +73,7 @@ export default function CsvUpload({ setDataFrame }: CsvUploadProps) {
     if (!csvData || selectedColumns.length === 0) return;
 
     const processedData = csvData.data.map((row) => {
-      const processedRow: Record<string, any> = {};
+      const processedRow: Record<string, string | number> = {};
       selectedColumns.forEach((header) => {
         const index = csvData.headers.indexOf(header);
         processedRow[header] = row[index];
@@ -81,32 +81,25 @@ export default function CsvUpload({ setDataFrame }: CsvUploadProps) {
       return processedRow;
     });
 
-    console.log("Processed Data for DataFrame:", processedData);
-
     setProcessedData(processedData);
 
     try {
       const df = new DataFrame(processedData, { columns: selectedColumns });
-      console.log("Created DataFrame:", df);
       setDataFrame(df);
     } catch (error) {
-      console.error("Error creating DataFrame:", error);
-      alert("Error creating DataFrame. Check console for details.");
+      console.error('Error creating DataFrame:', error);
+      alert('Error creating DataFrame. Check console for details.');
     }
   };
 
-  // Function to handle sentiment analysis
   const handleSentimentAnalysis = () => {
     if (!sentimentColumn) {
-      alert("Please select a column for sentiment analysis.");
+      alert('Please select a column for sentiment analysis.');
       return;
     }
-    // Implement sentiment analysis logic here
-    console.log("Running sentiment analysis on column:", sentimentColumn);
-    // Example: You can access the selected column data like this:
-    const sentimentData = processedData.map(row => row[sentimentColumn]);
-    console.log("Sentiment Data:", sentimentData);
-    // Add your sentiment analysis logic here
+    const sentimentData = processedData.map((row) => row[sentimentColumn]);
+    console.log('Running sentiment analysis on column:', sentimentColumn);
+    console.log('Sentiment Data:', sentimentData);
   };
 
   return (
@@ -156,30 +149,32 @@ export default function CsvUpload({ setDataFrame }: CsvUploadProps) {
         {processedData.length > 0 && (
           <div className="mt-4">
             <h3 className="text-lg font-semibold mb-2">Dataframe Preview (Top 10 Rows):</h3>
-            <TableContainer component={Paper} style={{ maxHeight: 400, overflow: 'auto' }}>
-              <Table stickyHeader>
-                <TableHead>
-                  <TableRow>
-                    {Object.keys(processedData[0]).map((key) => (
-                      <TableCell key={key} style={{ border: '1px solid #ccc' }}>{key}</TableCell>
-                    ))}
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {processedData.slice(0, 10).map((row, index) => (
-                    <TableRow key={index}>
-                      {Object.values(row).map((value, idx) => (
-                        <TableCell key={idx} style={{ border: '1px solid #ccc' }}>{value}</TableCell>
+            <TableContainer component={Paper} style={{ maxHeight: 400, maxWidth: 800, overflow: 'auto' }}>
+              <div style={{ overflowX: 'auto' }}>
+                <Table stickyHeader>
+                  <TableHead>
+                    <TableRow>
+                      {Object.keys(processedData[0]).map((key) => (
+                        <TableCell key={key} style={{ border: '1px solid #ccc' }}>{key}</TableCell>
                       ))}
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                  </TableHead>
+                  <TableBody>
+                    {processedData.slice(0, 10).map((row, index) => (
+                      <TableRow key={index}>
+                        {Object.values(row).map((value, idx) => (
+                          <TableCell key={idx} style={{ border: '1px solid #ccc' }}>{value}</TableCell>
+                        ))}
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
             </TableContainer>
 
             <div className="mt-4">
               <h3 className="text-lg font-semibold mb-2">Select Column for Sentiment Analysis:</h3>
-              {csvData?.headers.map((header) => (
+              {csvData?.headers?.map((header) => (
                 <label key={header} className="flex items-center space-x-2">
                   <input
                     type="radio"
