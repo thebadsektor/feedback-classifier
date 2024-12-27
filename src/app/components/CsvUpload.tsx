@@ -3,6 +3,7 @@
 import { ChangeEvent, useState } from 'react';
 import Papa from 'papaparse';
 import { DataFrame } from 'danfojs';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 
 interface CsvData {
   data: any[];
@@ -155,24 +156,26 @@ export default function CsvUpload({ setDataFrame }: CsvUploadProps) {
         {processedData.length > 0 && (
           <div className="mt-4">
             <h3 className="text-lg font-semibold mb-2">Dataframe Preview (Top 10 Rows):</h3>
-            <table className="min-w-full border-collapse border border-gray-300">
-              <thead>
-                <tr>
-                  {Object.keys(processedData[0]).map((key) => (
-                    <th key={key} className="border border-gray-300 px-4 py-2">{key}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {processedData.slice(0, 10).map((row, index) => (
-                  <tr key={index}>
-                    {Object.values(row).map((value, idx) => (
-                      <td key={idx} className="border border-gray-300 px-4 py-2">{value}</td>
+            <TableContainer component={Paper} style={{ maxHeight: 400, overflow: 'auto' }}>
+              <Table stickyHeader>
+                <TableHead>
+                  <TableRow>
+                    {Object.keys(processedData[0]).map((key) => (
+                      <TableCell key={key} style={{ border: '1px solid #ccc' }}>{key}</TableCell>
                     ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {processedData.slice(0, 10).map((row, index) => (
+                    <TableRow key={index}>
+                      {Object.values(row).map((value, idx) => (
+                        <TableCell key={idx} style={{ border: '1px solid #ccc' }}>{value}</TableCell>
+                      ))}
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
 
             <div className="mt-4">
               <h3 className="text-lg font-semibold mb-2">Select Column for Sentiment Analysis:</h3>
@@ -194,7 +197,7 @@ export default function CsvUpload({ setDataFrame }: CsvUploadProps) {
             <div className="flex justify-center mt-4">
               <button
                 onClick={handleSentimentAnalysis}
-                className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md transition-colors"
+                className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
               >
                 Run Sentiment Analysis
               </button>
