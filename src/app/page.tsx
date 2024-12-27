@@ -3,11 +3,6 @@
 import CsvUpload from './components/CsvUpload';
 import { useState } from 'react';
 import { DataFrame } from 'danfojs';
-import SentimentAnalyzer from './components/SentimentAnalyzer';
-interface SentimentResult {
-  label: string;
-  score: number; // Add other properties as needed
-}
 
 export default function Home() {
   const [dataFrame, setDataFrame] = useState<DataFrame | null>(null);
@@ -18,7 +13,6 @@ export default function Home() {
         <CsvUpload setDataFrame={setDataFrame} />
         {/* TODO: Make use of dataFrame */}
         {dataFrame && <></>}
-        <SentimentAnalyzer />
       </div>
     </main>
   );
