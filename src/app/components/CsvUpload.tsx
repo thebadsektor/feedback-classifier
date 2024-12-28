@@ -119,8 +119,8 @@ export default function CsvUpload({ setDataFrame }: CsvUploadProps) {
 
         {csvData && (
           <div className="w-full mt-4">
-            <h3 className="text-lg font-semibold mb-2">Select columns to process:</h3>
-            <div className="flex flex-wrap gap-2 mb-4">
+            <h3 className="text-lg font-semibold mb-2 text-center">Select columns to process:</h3>
+            <div className="flex justify-center flex-wrap gap-2 mb-4">
               {csvData.headers.map((header) => (
                 <label key={header} className="flex items-center space-x-2">
                   <input
