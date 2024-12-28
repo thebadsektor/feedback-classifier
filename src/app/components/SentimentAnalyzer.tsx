@@ -55,7 +55,13 @@ const SentimentAnalyzer: React.FC<SentimentAnalyzerProps> = ({ dataFrame }) => {
       console.log('Best Result:', bestResult);
   
       if (bestResult && typeof bestResult.score === 'number') {
-        setSentimentResult(bestResult);
+        // Custom logic for neutral sentiment
+        const threshold = 0.5; // Define a threshold score
+        if (bestResult.score < threshold) {
+          setSentimentResult({ label: 'Neutral', score: 0 }); // Set neutral sentiment
+        } else {
+          setSentimentResult(bestResult);
+        }
       } else {
         console.error('Invalid bestResult structure:', bestResult);
       }
