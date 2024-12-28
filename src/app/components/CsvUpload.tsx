@@ -21,7 +21,6 @@ export default function CsvUpload({ setDataFrame }: CsvUploadProps) {
   const [selectedColumns, setSelectedColumns] = useState<string[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [processedData, setProcessedData] = useState<Record<string, string | number>[]>([]);
-  const [sentimentColumn, setSentimentColumn] = useState<string | null>(null);
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.[0];
@@ -92,18 +91,12 @@ export default function CsvUpload({ setDataFrame }: CsvUploadProps) {
     }
   };
 
-  const handleSentimentAnalysis = () => {
-    if (!sentimentColumn) {
-      alert('Please select a column for sentiment analysis.');
-      return;
-    }
-    const sentimentData = processedData.map((row) => row[sentimentColumn]);
-    console.log('Running sentiment analysis on column:', sentimentColumn);
-    console.log('Sentiment Data:', sentimentData);
-  };
-
   return (
     <div className="w-full p-6 bg-white rounded-lg shadow-md">
+      <h3 className="text-lg font-semibold mb-2 text-center">Upload CSV</h3>
+      <p className="text-gray-600 text-center mb-4">
+          This uploads a CSV file and allows you to select columns to process.
+      </p>
       <div className="flex flex-col items-center justify-center min-h-40 gap-4">
         <label className="relative cursor-pointer bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md transition-colors">
           <span>{file ? file.name : 'Upload CSV'}</span>
@@ -171,32 +164,6 @@ export default function CsvUpload({ setDataFrame }: CsvUploadProps) {
                 </Table>
               </div>
             </TableContainer>
-
-            <div className="mt-4">
-              <h3 className="text-lg font-semibold mb-2">Select Column for Sentiment Analysis:</h3>
-              {csvData?.headers?.map((header) => (
-                <label key={header} className="flex items-center space-x-2">
-                  <input
-                    type="radio"
-                    name="sentimentColumn"
-                    value={header}
-                    checked={sentimentColumn === header}
-                    onChange={() => setSentimentColumn(header)}
-                    className="rounded border-gray-300"
-                  />
-                  <span className="text-sm">{header}</span>
-                </label>
-              ))}
-            </div>
-
-            <div className="flex justify-center mt-4">
-              <button
-                onClick={handleSentimentAnalysis}
-                className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
-              >
-                Run Sentiment Analysis
-              </button>
-            </div>
           </div>
         )}
       </div>

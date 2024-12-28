@@ -16,7 +16,7 @@ export default function Home() {
         <CsvUpload setDataFrame={setDataFrame} />
         {/* TODO: Make use of dataFrame */}
         {dataFrame && <></>}
-        <SentimentAnalyzer />
+        <SentimentAnalyzer dataFrame={dataFrame} />
         <LLMTagging />
         <ExecutiveSummarizer />
       </div>
