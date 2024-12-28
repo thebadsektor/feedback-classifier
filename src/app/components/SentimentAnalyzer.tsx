@@ -41,7 +41,6 @@ const SentimentAnalyzer = () => {
   
       // Flatten the result if it's nested
       const flattenedResult: Sentiment[] = Array.isArray(result[0]) ? result.flat() : result;
-      console.log('Flattened Result:', flattenedResult);
   
       // Extract the highest-scoring sentiment
       const bestResult = flattenedResult.reduce<Sentiment>((prev: Sentiment, current: Sentiment) => 
