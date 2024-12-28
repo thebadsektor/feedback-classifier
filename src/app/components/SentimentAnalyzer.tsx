@@ -63,32 +63,34 @@ const SentimentAnalyzer = () => {
   };  
 
   return (
-    <div>
-      <textarea
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-        placeholder="Enter text for sentiment analysis"
-        rows={4}
-        className="border p-2 w-full"
-      />
-      <button
-        onClick={analyzeSentiment}
-        className="mt-2 bg-blue-500 text-white p-2 rounded"
-        disabled={isLoading}
-      >
-        {isLoading ? 'Loading...' : 'Analyze Sentiment'}
-      </button>
-      {sentimentResult && (
-        <p className="mt-4">
-          Sentiment: {sentimentResult.label} (Score: {(sentimentResult.score ?? 0).toFixed(2)})
-        </p>
-      )}
-      <button
-        onClick={() => setSentimentResult(null)}
-        className="mt-2 bg-red-500 text-white p-2 rounded"
-      >
-        Reset
-      </button>
+    <div className="w-full p-6 bg-white rounded-lg shadow-md">
+        <div className="flex flex-col items-center justify-center min-h-40 gap-4">
+        <textarea
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          placeholder="Enter text for sentiment analysis"
+          rows={4}
+          className="border p-2 w-full"
+        />
+        <button
+            onClick={analyzeSentiment}
+            className="mt-2 bg-blue-500 text-white p-2 rounded"
+            disabled={isLoading}
+          >
+            {isLoading ? 'Loading...' : 'Analyze Sentiment'}
+          </button>
+          {sentimentResult && (
+            <p className="mt-4">
+              Sentiment: {sentimentResult.label} (Score: {(sentimentResult.score ?? 0).toFixed(2)})
+            </p>
+          )}
+          <button
+            onClick={() => setSentimentResult(null)}
+            className="mt-2 bg-red-500 text-white p-2 rounded"
+          >
+            Reset
+          </button>
+      </div>
     </div>
   );
 };

@@ -1,9 +1,12 @@
 'use client';
 
 import CsvUpload from './components/CsvUpload';
+import SentimentAnalyzer from './components/SentimentAnalyzer';
+import ExecutiveSummarizer from './components/ExecutiveSummarizer';
+import LLMTagging from './components/LLMTagging';
 import { useState } from 'react';
 import { DataFrame } from 'danfojs';
-import SentimentAnalyzer from './components/SentimentAnalyzer';
+
 export default function Home() {
   const [dataFrame, setDataFrame] = useState<DataFrame | null>(null);
 
@@ -14,6 +17,8 @@ export default function Home() {
         {/* TODO: Make use of dataFrame */}
         {dataFrame && <></>}
         <SentimentAnalyzer />
+        <LLMTagging />
+        <ExecutiveSummarizer />
       </div>
     </main>
   );
