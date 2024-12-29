@@ -101,19 +101,25 @@ export default function LLMTagging({ data, selectedColumn }: LLMTaggingProps) {
 
         // Process the JSON response and append boolean values to their respective headers
         const processedData = tempData.map((row, index) => {
-            // Clean the response to remove Markdown formatting
             const cleanedResponse = responses[index].replace(/```json|```/g, '').trim(); // Remove code block delimiters
             console.log("Cleaned Response:", cleanedResponse); // Debugging log for cleaned response
 
             try {
                 const parsedResponse = JSON.parse(cleanedResponse); // Parse the cleaned response
-                console.log("Parsed Response:", parsedResponse); // Debugging log for parsed response
 
-                Object.keys(parsedResponse).forEach(tag => {
-                    if (row) {
-                        row[tag] = parsedResponse[tag]; // Set the boolean value
-                    }
-                });
+                // Validate the response structure
+                const expectedKeys = taggingResult?.tags || [];
+                const isValidResponse = expectedKeys.every(key => key in parsedResponse);
+
+                if (isValidResponse) {
+                    Object.keys(parsedResponse).forEach(tag => {
+                        if (row) {
+                            row[tag] = parsedResponse[tag]; // Set the boolean value
+                        }
+                    });
+                } else {
+                    console.warn("Invalid response structure:", parsedResponse); // Log invalid structure
+                }
             } catch (error) {
                 console.error("Error parsing JSON:", error); // Log any JSON parsing errors
                 console.error("Original Response:", responses[index]); // Log the original response for debugging
