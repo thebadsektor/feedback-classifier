@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { TagsInput } from 'react-tag-input-component';
 import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper } from '@mui/material';
+import CircularProgress from '@mui/material/CircularProgress';
 
 // Define a new type for tagging results
 type TaggingResult = {
@@ -34,6 +35,7 @@ export default function LLMTagging({ data, selectedColumn }: LLMTaggingProps) {
     const [updatedData, setUpdatedData] = useState<DataRow[]>(data); // State to hold updated data
     const [isTaggingDone, setIsTaggingDone] = useState<boolean>(false); // State to track tagging completion
     const [newData, setNewData] = useState<DataRow[]>([]); // State for new data
+    const [isLoading, setIsLoading] = useState<boolean>(false); // Loading state for tagging
 
     // Initialize the Gemini model
     const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY; // Ensure you have the API key
@@ -68,6 +70,7 @@ export default function LLMTagging({ data, selectedColumn }: LLMTaggingProps) {
             return;
         }
 
+        setIsLoading(true); // Set loading state to true
         console.log("Selected Column:", selectedColumn);
         console.log("Available Columns in Data:", Object.keys(updatedData[0] || {}));
 
@@ -122,6 +125,7 @@ export default function LLMTagging({ data, selectedColumn }: LLMTaggingProps) {
         setNewData(processedData); // Update the state with the new data
         setUpdatedData(processedData); // Update the original data state
         setIsTaggingDone(true); // Mark tagging as done
+        setIsLoading(false); // Reset loading state
     };
 
     return (
@@ -161,10 +165,18 @@ export default function LLMTagging({ data, selectedColumn }: LLMTaggingProps) {
 
                 <div className="flex justify-center mt-4">
                     <button
-                        className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed mb-4"
+                        className="flex items-center bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed mb-4"
                         onClick={handleRunTagging} // Attach the click handler
+                        disabled={isLoading} // Disable button while loading
                     >
-                        {"Run LLM Tagging"}
+                        {isLoading ? (
+                            <>
+                                <CircularProgress size={24} className="mr-2" /> {/* Spinner */}
+                                Tagging in Progress
+                            </>
+                        ) : (
+                            "Run LLM Tagging"
+                        )}
                     </button>
                 </div>
 
