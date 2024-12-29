@@ -15,6 +15,7 @@ import { analyzeSentimentRuleBased } from '../utils/sentimentAnalysis'; // Impor
 import { GoogleGenerativeAI } from '@google/generative-ai'; // Import the Gemini API
 import { GoogleAIResponse } from "@/types/GoogleAIResponse";
 import LLMTagging from './LLMTagging'; // Import the LLMTagging component
+import CircularProgress from '@mui/material/CircularProgress'; // Import CircularProgress for spinner
 
 interface SentimentAnalyzerProps {
   dataFrame: DataFrame | null;
@@ -213,10 +214,17 @@ const SentimentAnalyzer: React.FC<SentimentAnalyzerProps> = ({ dataFrame }) => {
           <div className="flex justify-center mt-4">
             <button
               onClick={analyzeSentiment}
-              className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed mb-4"
+              className="flex items-center bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed mb-4"
               disabled={isLoading || !selectedColumn}
             >
-              {isLoading ? "Analyzing Sentiment..." : "Run Sentiment Analysis"}
+              {isLoading ? (
+                <>
+                  <CircularProgress size={24} className="mr-2" /> {/* Spinner */}
+                  Analyzing Sentiment...
+                </>
+              ) : (
+                "Run Sentiment Analysis"
+              )}
             </button>
           </div>
         </>
