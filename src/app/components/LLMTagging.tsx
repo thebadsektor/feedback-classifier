@@ -18,9 +18,10 @@ export default function LLMTagging() {
             "Zero Tolerance"
         ]
     });
+
     const [promptPreview, setPromptPreview] = useState<string>('');
 
-    // Function to dynamically generate the prompt
+    // Generate prompt aligned with Function Schema
     const generatePrompt = (tags: string[]) => {
         if (tags.length === 0) {
             return "No tags provided. Please enter tags to generate the prompt.";
@@ -28,7 +29,7 @@ export default function LLMTagging() {
 
         const tagsList = tags.map(tag => `"${tag}"`).join(', ');
         return `Categorize the given employee feedback into the following categories: ${tagsList}. 
-            For each category, indicate whether the feedback is relevant and provide a brief explanation if applicable.`;
+            Return the result as a JSON object where each category is a key and its value is a boolean indicating whether the feedback is relevant to that category.`;
     };
 
     // Handle when tags are updated
@@ -73,7 +74,7 @@ export default function LLMTagging() {
                     </div>
                 </div>
 
-                {/* Replace the placeholder inputData with actual feedback data */}
+                {/* Placeholder for GeminiAPI integration */}
                 <GeminiAPI inputData={promptPreview} onResult={() => console.log("Tagging Completed")} />
             </div>
         </div>
