@@ -2,6 +2,7 @@ import { useState } from 'react';
 import GeminiAPI from './GeminiAPI';
 import { GoogleAIResponse } from '../../types/GoogleAIResponse';
 import DonutChart from './DonutChart';
+import HorizontalBarChart from './HorizontalBarChart';
 
 interface ExecutiveSummarizerProps {
     dataFrame: any; // Adjust the type as necessary based on your DataFrame structure
@@ -46,7 +47,12 @@ export default function ExecutiveSummarizer({ dataFrame }: ExecutiveSummarizerPr
                     </div>
                 )}
 
-                {showChart && <DonutChart />}
+                {showChart && (
+                    <>
+                        <DonutChart dataFrame={dataFrame} />
+                        <HorizontalBarChart />
+                    </>
+                )}
             </div>
         </div>
     );
