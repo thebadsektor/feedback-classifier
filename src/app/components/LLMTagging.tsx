@@ -10,7 +10,7 @@ type TaggingResult = {
 
 // Define a type for the expected structure of each row
 interface DataRow {
-    [key: string]: string | number | undefined; // Adjust types as necessary
+    [key: string]: string | number | boolean | undefined; // Adjust types as necessary
 }
 
 interface LLMTaggingProps {
@@ -33,6 +33,7 @@ export default function LLMTagging({ data, selectedColumn }: LLMTaggingProps) {
     const [promptPreview, setPromptPreview] = useState<string>('');
     const [updatedData, setUpdatedData] = useState<DataRow[]>(data); // State to hold updated data
     const [isTaggingDone, setIsTaggingDone] = useState<boolean>(false); // State to track tagging completion
+    const [newData, setNewData] = useState<DataRow[]>([]); // State for new data
 
     // Initialize the Gemini model
     const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY; // Ensure you have the API key
@@ -64,36 +65,62 @@ export default function LLMTagging({ data, selectedColumn }: LLMTaggingProps) {
     const handleRunTagging = async () => {
         if (!selectedColumn) {
             console.error("Selected column is null. Cannot run tagging.");
-            return; // Exit if selectedColumn is null
+            return;
         }
 
-        console.log("Selected Column:", selectedColumn); // Debugging log for selected column
-        console.log("Available Columns in Data:", Object.keys(updatedData[0] || {})); // Log available columns
+        console.log("Selected Column:", selectedColumn);
+        console.log("Available Columns in Data:", Object.keys(updatedData[0] || {}));
 
-        const feedbackColumn = updatedData.map(row => row[selectedColumn]).filter((feedback): feedback is string => feedback !== undefined && feedback !== null).map(String); // Use selectedColumn for feedback
+        // Append tags as new headers to the updatedData
+        const newHeaders = taggingResult?.tags || [];
+        const tempData = updatedData.map(row => {
+            newHeaders.forEach(tag => {
+                row[tag] = false; // Initialize new headers with false
+            });
+            return row;
+        });
+
+        const feedbackColumn = tempData.map(row => row[selectedColumn]).filter((feedback): feedback is string => feedback !== undefined && feedback !== null).map(String);
         
-        console.log("Feedback Column:", feedbackColumn); // Debugging log for feedback column
+        console.log("Feedback Column:", feedbackColumn);
 
         const responses = await Promise.all(feedbackColumn.map(async (feedback) => {
             const prompt = generatePrompt(taggingResult?.tags || []);
-            console.log("Generated Prompt:", prompt); // Debugging log for generated prompt
+            console.log("Generated Prompt:", prompt);
 
-            // Call the in-house Gemini model with the prompt and feedback
             const geminiResponse = await model.generateContent(`Categorize the feedback: "${feedback}" based on the following categories: ${prompt}`);
-            console.log("Gemini Response:", geminiResponse); // Debugging log for Gemini response
+            console.log("Gemini Response:", geminiResponse);
 
             return geminiResponse.response.text(); // Assuming the response is in the expected format
         }));
 
-        console.log("Responses from Gemini:", responses); // Debugging log for responses
+        console.log("Responses from Gemini:", responses);
 
-        // Append the responses to the updatedData
-        const newData = updatedData.map((row, index) => ({
-            ...row,
-            'llm tagging': responses[index] || "N/A" // Add the response to the new column, fallback to "N/A"
-        }));
+        // Process the JSON response and append boolean values to their respective headers
+        const processedData = tempData.map((row, index) => {
+            // Clean the response to remove Markdown formatting
+            const cleanedResponse = responses[index].replace(/```json|```/g, '').trim(); // Remove code block delimiters
+            console.log("Cleaned Response:", cleanedResponse); // Debugging log for cleaned response
 
-        setUpdatedData(newData); // Update the state with the new data
+            try {
+                const parsedResponse = JSON.parse(cleanedResponse); // Parse the cleaned response
+                console.log("Parsed Response:", parsedResponse); // Debugging log for parsed response
+
+                Object.keys(parsedResponse).forEach(tag => {
+                    if (row) {
+                        row[tag] = parsedResponse[tag]; // Set the boolean value
+                    }
+                });
+            } catch (error) {
+                console.error("Error parsing JSON:", error); // Log any JSON parsing errors
+                console.error("Original Response:", responses[index]); // Log the original response for debugging
+            }
+
+            return row;
+        });
+
+        setNewData(processedData); // Update the state with the new data
+        setUpdatedData(processedData); // Update the original data state
         setIsTaggingDone(true); // Mark tagging as done
     };
 
@@ -149,13 +176,13 @@ export default function LLMTagging({ data, selectedColumn }: LLMTaggingProps) {
                             <Table>
                                 <TableHead>
                                     <TableRow>
-                                        {updatedData.length > 0 && Object.keys(updatedData[0]).map((key) => (
+                                        {newData.length > 0 && Object.keys(newData[0]).map((key) => (
                                             <TableCell key={key}>{key}</TableCell>
                                         ))}
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {updatedData.slice(0, 5).map((row, index) => (
+                                    {newData.slice(0, 5).map((row, index) => (
                                         <TableRow key={index}>
                                             {Object.keys(row).map((key) => (
                                                 <TableCell key={key}>
