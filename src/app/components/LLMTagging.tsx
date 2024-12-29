@@ -67,6 +67,9 @@ export default function LLMTagging({ data, selectedColumn }: LLMTaggingProps) {
             return; // Exit if selectedColumn is null
         }
 
+        console.log("Selected Column:", selectedColumn); // Debugging log for selected column
+        console.log("Available Columns in Data:", Object.keys(updatedData[0] || {})); // Log available columns
+
         const feedbackColumn = updatedData.map(row => row[selectedColumn]).filter((feedback): feedback is string => feedback !== undefined && feedback !== null).map(String); // Use selectedColumn for feedback
         
         console.log("Feedback Column:", feedbackColumn); // Debugging log for feedback column
@@ -141,7 +144,7 @@ export default function LLMTagging({ data, selectedColumn }: LLMTaggingProps) {
                 {/* Display the first 5 rows of updated data only if tagging is done */}
                 {isTaggingDone && (
                     <>
-                        <h3 className="text-lg font-semibold mb-2">Data Preview</h3>
+                        <h3 className="text-lg font-semibold mb-2 text-left w-full">Data Preview (First 5 Rows)</h3>
                         <TableContainer component={Paper} style={{ maxHeight: 200, overflow: 'auto' }}>
                             <Table>
                                 <TableHead>
