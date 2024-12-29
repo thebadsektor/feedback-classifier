@@ -220,6 +220,9 @@ const SentimentAnalyzer: React.FC<SentimentAnalyzerProps> = ({ dataFrame }) => {
 
       {updatedDataFrame && (
         <>
+          <h3 className="text-lg font-semibold mb-2">
+            Sentiment Analysis Results (First 5 Rows)
+          </h3>
           <TableContainer component={Paper} style={{ maxHeight: 400, maxWidth: 800, overflow: 'auto' }}>
             <Table>
               <TableHead>
@@ -242,7 +245,7 @@ const SentimentAnalyzer: React.FC<SentimentAnalyzerProps> = ({ dataFrame }) => {
               </TableBody>
             </Table>
           </TableContainer>
-          <LLMTagging data={updatedDataFrame.rows.slice(0, 5)} />
+          <LLMTagging data={updatedDataFrame.rows.slice(0, 5)} selectedColumn={selectedColumn} />
         </>
       )}
     </div>
