@@ -204,7 +204,7 @@ export default function LLMTagging({ data, selectedColumn }: LLMTaggingProps) {
                 {isTaggingDone && (
                     <>
                         <h3 className="text-lg font-semibold mb-2 text-left w-full">Data Preview (First 5 Rows)</h3>
-                        <TableContainer component={Paper} style={{ maxHeight: 200, overflow: 'auto' }}>
+                        <TableContainer component={Paper} style={{ maxHeight: 400, overflow: 'auto' }}>
                             <Table>
                                 <TableHead>
                                     <TableRow>
