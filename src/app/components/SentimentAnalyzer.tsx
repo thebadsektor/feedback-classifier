@@ -27,6 +27,7 @@ const SentimentAnalyzer: React.FC<SentimentAnalyzerProps> = ({ dataFrame }) => {
   );
   const [selectedColumn, setSelectedColumn] = useState<string | null>(null);
   const [selectedMode, setSelectedMode] = useState<string>('sentiment-rule-based');
+  const [isLLMTaggingVisible, setIsLLMTaggingVisible] = useState(false);
 
   const analyzeSentiment = async () => {
     console.log('Starting sentiment analysis...');
@@ -37,6 +38,8 @@ const SentimentAnalyzer: React.FC<SentimentAnalyzerProps> = ({ dataFrame }) => {
     }
 
     setIsLoading(true);
+    setUpdatedDataFrame(null);
+    setIsLLMTaggingVisible(false);
     console.log('DataFrame rows:', dataFrame.rows);
     console.log('Selected column for sentiment analysis:', selectedColumn);
 
@@ -129,6 +132,7 @@ const SentimentAnalyzer: React.FC<SentimentAnalyzerProps> = ({ dataFrame }) => {
       console.log('New rows with sentiment:', newRows);
       const topRows = newRows.slice(0, 5); // Only take the top 10 rows
       setUpdatedDataFrame({ columns: [...dataFrame.columns, 'sentiment', 'sentimentScore'], rows: topRows });
+      setIsLLMTaggingVisible(true);
     } catch (error) {
       console.error("Error during sentiment analysis:", error);
     } finally {
@@ -245,7 +249,9 @@ const SentimentAnalyzer: React.FC<SentimentAnalyzerProps> = ({ dataFrame }) => {
               </TableBody>
             </Table>
           </TableContainer>
-          <LLMTagging data={updatedDataFrame.rows.slice(0, 5)} selectedColumn={selectedColumn} />
+          {isLLMTaggingVisible && (
+            <LLMTagging data={updatedDataFrame.rows.slice(0, 5)} selectedColumn={selectedColumn} />
+          )}
         </>
       )}
     </div>
