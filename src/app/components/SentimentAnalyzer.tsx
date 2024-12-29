@@ -16,6 +16,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai"; // Import the Gemini
 import { GoogleAIResponse } from "@/types/GoogleAIResponse";
 import LLMTagging from "./LLMTagging"; // Import the LLMTagging component
 import CircularProgress from "@mui/material/CircularProgress"; // Import CircularProgress for spinner
+import ExecutiveSummarizer from "./ExecutiveSummarizer"; // Import the ExecutiveSummarizer component
 
 interface SentimentAnalyzerProps {
   dataFrame: DataFrame | null;
@@ -279,6 +280,7 @@ const SentimentAnalyzer: React.FC<SentimentAnalyzerProps> = ({ dataFrame }) => {
               selectedColumn={selectedColumn}
             />
           )}
+          <ExecutiveSummarizer dataFrame={updatedDataFrame} />
         </>
       )}
     </div>

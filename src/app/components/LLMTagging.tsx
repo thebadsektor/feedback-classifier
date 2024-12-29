@@ -4,7 +4,6 @@ import { TagsInput } from 'react-tag-input-component';
 import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 import Papa from 'papaparse';
-import ExecutiveSummary from './ExecutiveSummarizer';
 // Define a new type for tagging results
 type TaggingResult = {
     tags: string[];
@@ -236,7 +235,6 @@ export default function LLMTagging({ data, selectedColumn }: LLMTaggingProps) {
                                 Download Final Dataframe as CSV
                             </a>
                         </div>
-                        <ExecutiveSummary />
                     </>
                 )}
             </div>
