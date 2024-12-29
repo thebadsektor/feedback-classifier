@@ -1,13 +1,23 @@
 import { useState } from 'react';
 import GeminiAPI from './GeminiAPI';
 import { TagsInput } from 'react-tag-input-component';
+import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper } from '@mui/material';
 
 // Define a new type for tagging results
 type TaggingResult = {
     tags: string[];
 };
 
-export default function LLMTagging() {
+// Define a type for the expected structure of each row
+interface DataRow {
+    [key: string]: string | number | undefined; // Adjust types as necessary
+}
+
+interface LLMTaggingProps {
+    data: DataRow[]; // Use the new DataRow type
+}
+
+export default function LLMTagging({ data }: LLMTaggingProps) {
     const [taggingResult, setTaggingResult] = useState<TaggingResult | null>({
         tags: [
             "Accomplishments",
@@ -73,6 +83,38 @@ export default function LLMTagging() {
                         {promptPreview || "Start adding tags to preview the generated prompt."}
                     </div>
                 </div>
+                <div className="flex justify-center mt-4">
+                    <button
+                    className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed mb-4"
+                    >
+                    {"Run LLM Tagging"}
+                    </button>
+                </div>
+
+                {/* Display the first 5 rows of data */}
+                <h3 className="text-lg font-semibold mb-2">Data Preview</h3>
+                <TableContainer component={Paper} style={{ maxHeight: 200, overflow: 'auto' }}>
+                    <Table>
+                        <TableHead>
+                            <TableRow>
+                                {data.length > 0 && Object.keys(data[0]).map((key) => (
+                                    <TableCell key={key}>{key}</TableCell>
+                                ))}
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {data.slice(0, 5).map((row, index) => (
+                                <TableRow key={index}>
+                                    {Object.keys(row).map((key) => (
+                                        <TableCell key={key}>
+                                            {row[key] !== undefined ? row[key].toString() : "N/A"}
+                                        </TableCell>
+                                    ))}
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
 
                 {/* Placeholder for GeminiAPI integration */}
                 <GeminiAPI inputData={promptPreview} onResult={() => console.log("Tagging Completed")} />

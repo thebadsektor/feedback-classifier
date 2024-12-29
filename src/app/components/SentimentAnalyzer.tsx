@@ -14,6 +14,7 @@ import {
 import { analyzeSentimentRuleBased } from '../utils/sentimentAnalysis'; // Import the new function
 import { GoogleGenerativeAI } from '@google/generative-ai'; // Import the Gemini API
 import { GoogleAIResponse } from "@/types/GoogleAIResponse";
+import LLMTagging from './LLMTagging'; // Import the LLMTagging component
 
 interface SentimentAnalyzerProps {
   dataFrame: DataFrame | null;
@@ -218,28 +219,31 @@ const SentimentAnalyzer: React.FC<SentimentAnalyzerProps> = ({ dataFrame }) => {
       )}
 
       {updatedDataFrame && (
-        <TableContainer component={Paper} style={{ maxHeight: 400, maxWidth: 800, overflow: 'auto' }}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                {updatedDataFrame.columns.map((col) => (
-                  <TableCell key={col}>{col}</TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {updatedDataFrame.rows.map((row, index) => (
-                <TableRow key={index}>
+        <>
+          <TableContainer component={Paper} style={{ maxHeight: 400, maxWidth: 800, overflow: 'auto' }}>
+            <Table>
+              <TableHead>
+                <TableRow>
                   {updatedDataFrame.columns.map((col) => (
-                    <TableCell key={col}>
-                      {row[col] !== undefined ? row[col].toString() : "N/A"}
-                    </TableCell>
+                    <TableCell key={col}>{col}</TableCell>
                   ))}
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+              </TableHead>
+              <TableBody>
+                {updatedDataFrame.rows.slice(0, 5).map((row, index) => (
+                  <TableRow key={index}>
+                    {updatedDataFrame.columns.map((col) => (
+                      <TableCell key={col}>
+                        {row[col] !== undefined ? row[col].toString() : "N/A"}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <LLMTagging data={updatedDataFrame.rows.slice(0, 5)} />
+        </>
       )}
     </div>
   );
