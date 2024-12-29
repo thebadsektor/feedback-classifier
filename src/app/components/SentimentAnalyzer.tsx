@@ -9,6 +9,7 @@ import {
   TableRow,
   TableCell,
   TableBody,
+  Paper
 } from "@mui/material";
 import { analyzeSentimentRuleBased } from '../utils/sentimentAnalysis'; // Import the new function
 import { GoogleGenerativeAI } from '@google/generative-ai'; // Import the Gemini API
@@ -125,7 +126,7 @@ const SentimentAnalyzer: React.FC<SentimentAnalyzerProps> = ({ dataFrame }) => {
       );
 
       console.log('New rows with sentiment:', newRows);
-      const topRows = newRows.slice(0, 10); // Only take the top 10 rows
+      const topRows = newRows.slice(0, 5); // Only take the top 10 rows
       setUpdatedDataFrame({ columns: [...dataFrame.columns, 'sentiment', 'sentimentScore'], rows: topRows });
     } catch (error) {
       console.error("Error during sentiment analysis:", error);
@@ -147,7 +148,7 @@ const SentimentAnalyzer: React.FC<SentimentAnalyzerProps> = ({ dataFrame }) => {
       {dataFrame && (
         <>
           <div className="mt-4">
-            <h3 className="text-lg font-semibold mb-2 text-center">
+            <h3 className="text-lg font-semibold mb-2">
               Select Column for Sentiment Analysis:
             </h3>
             {dataFrame.columns.map((column) => (
@@ -166,10 +167,10 @@ const SentimentAnalyzer: React.FC<SentimentAnalyzerProps> = ({ dataFrame }) => {
             ))}
           </div>
           <div className="mt-4">
-            <h3 className="text-lg font-semibold mb-2 text-center">
+            <h4 className="text-lg font-semibold mb-2">
               Select Mode for Sentiment Analysis:
-            </h3>
-            <div className="flex flex-col items-center">
+            </h4>
+            <div className="flex flex-col">
               <label className="flex items-center">
                 <input
                   type="radio"
@@ -217,7 +218,7 @@ const SentimentAnalyzer: React.FC<SentimentAnalyzerProps> = ({ dataFrame }) => {
       )}
 
       {updatedDataFrame && (
-        <TableContainer>
+        <TableContainer component={Paper} style={{ maxHeight: 400, maxWidth: 800, overflow: 'auto' }}>
           <Table>
             <TableHead>
               <TableRow>

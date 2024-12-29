@@ -141,7 +141,7 @@ export default function CsvUpload({ setDataFrame }: CsvUploadProps) {
 
         {processedData.length > 0 && (
           <div className="mt-4">
-            <h3 className="text-lg font-semibold mb-2">Dataframe Preview (Top 10 Rows):</h3>
+            <h3 className="text-lg font-semibold mb-2">Dataframe Preview (First 5 Rows):</h3>
             <TableContainer component={Paper} style={{ maxHeight: 400, maxWidth: 800, overflow: 'auto' }}>
               <div style={{ overflowX: 'auto' }}>
                 <Table stickyHeader>
@@ -153,7 +153,7 @@ export default function CsvUpload({ setDataFrame }: CsvUploadProps) {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {processedData.slice(0, 10).map((row, index) => (
+                    {processedData.slice(0, 5).map((row, index) => (
                       <TableRow key={index}>
                         {Object.values(row).map((value, idx) => (
                           <TableCell key={idx} style={{ border: '1px solid #ccc' }}>{value}</TableCell>
