@@ -8,6 +8,7 @@ import ExecutiveSummarizer from './components/ExecutiveSummarizer';
 import LLMTagging from './components/LLMTagging';
 import Spinner from './components/Spinner';
 import { DataFrame } from 'danfojs';
+import { convertDanfoToCustomDataFrame } from './utils/convertDataFrame';
 
 export default function Home() {
   const [dataFrame, setDataFrame] = useState<DataFrame | null>(null);
@@ -31,10 +32,13 @@ export default function Home() {
           <div className="h-full flex flex-col items-center justify-center gap-8 max-w-4xl mx-auto bg-gray-50 rounded-xl shadow-lg p-8">
             <CsvUpload setDataFrame={setDataFrame} />
             {/* TODO: Make use of dataFrame */}
-            {dataFrame && <></>}
-            <SentimentAnalyzer dataFrame={dataFrame} />
-            <LLMTagging />
-            <ExecutiveSummarizer />
+            {dataFrame && (
+              <>
+                <SentimentAnalyzer dataFrame={convertDanfoToCustomDataFrame(dataFrame)} />
+                <LLMTagging />
+                <ExecutiveSummarizer />
+              </>
+            )}
           </div>
         </main>
       )}

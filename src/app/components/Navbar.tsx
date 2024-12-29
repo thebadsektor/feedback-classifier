@@ -13,7 +13,7 @@ const Navbar: React.FC = () => {
           height={40} 
           className="mr-2 filter brightness-200"
         />
-        <h1 className="text-lg font-bold">PR Assistant</h1>
+        <h1 className="text-lg font-bold">AutoPR</h1>
       </div>
     </nav>
   );

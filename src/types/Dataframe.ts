@@ -1,4 +1,8 @@
 export interface DataFrame {
     columns: string[];
-    // Add other properties as needed
-  }
+    rows: DataRow[];
+}
+
+export interface DataRow {
+    [key: string]: any;
+}
