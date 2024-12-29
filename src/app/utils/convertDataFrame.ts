@@ -1,10 +1,10 @@
 import { DataFrame as DanfoDataFrame } from 'danfojs';
-import { DataFrame } from '../../types/Dataframe';
+import { DataFrame, DataRow } from '../../types/Dataframe';
 
 export const convertDanfoToCustomDataFrame = (danfoDf: DanfoDataFrame): DataFrame => {
-  const columns = danfoDf.columns;
-  const rows = (danfoDf.values as any[][]).map((row: any[]) => {
-    const rowObject: { [key: string]: any } = {};
+  const columns: string[] = danfoDf.columns;
+  const rows = (danfoDf.values as (string | number)[][]).map((row) => {
+    const rowObject: DataRow = {};
     columns.forEach((col, index) => {
       rowObject[col] = row[index];
     });
@@ -12,4 +12,4 @@ export const convertDanfoToCustomDataFrame = (danfoDf: DanfoDataFrame): DataFram
   });
 
   return { columns, rows };
-}; 
+};

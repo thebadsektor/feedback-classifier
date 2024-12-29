@@ -4,47 +4,39 @@ import React, { useState } from 'react';
 import { DataFrame } from '../../types/Dataframe';
 import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody } from '@mui/material';
 
-interface Sentiment {
-  label: string;
-  score: number;
-}
-
 interface SentimentAnalyzerProps {
   dataFrame: DataFrame | null;
 }
 
-interface DataRow {
-  [key: string]: any; // This allows for dynamic keys with any type of value
-}
-
 const SentimentAnalyzer: React.FC<SentimentAnalyzerProps> = ({ dataFrame }) => {
-  const [text, setText] = useState('');
-  const [sentimentResult, setSentimentResult] = useState<{ label: string; score: number } | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [updatedDataFrame, setUpdatedDataFrame] = useState<DataFrame | null>(null);
   const [selectedColumn, setSelectedColumn] = useState<string | null>(null);
 
   const analyzeSentiment = async () => {
-    console.log('Starting sentiment analysis...');
-  
     if (!dataFrame || !dataFrame.rows || !selectedColumn) {
       console.log('DataFrame or selectedColumn is not defined.');
       return;
     }
   
-    // Define customizable ranges for sentiment classification
-    const sentimentRanges = {
-      positive: [0.21, 1], // Scores between 0.21 and 1 are positive
-      neutral: [-0.2, 0.2], // Scores between -0.2 and 0.2 are neutral
-      negative: [-1, -0.21], // Scores less than -0.21 are negative
-    };
+    const filteredRows = dataFrame.rows.map((row) => {
+      // Ensure the selected column has only `string | number` values
+      const value = row[selectedColumn];
+      if (typeof value === 'boolean') {
+        console.warn(`Skipping boolean value in column ${selectedColumn}:`, value);
+        return { ...row, sentiment: 'Skipped', sentimentScore: 'N/A' };
+      }
+      return row;
+    });
   
     setIsLoading(true);
   
     try {
       const newRows = await Promise.all(
-        dataFrame.rows.map(async (row: DataRow) => {
-          console.log('Analyzing row:', row);
+        filteredRows.map(async (row) => {
+          if (!row || typeof row[selectedColumn!] !== 'string') {
+            return { ...row, sentiment: 'Unknown', sentimentScore: 0 };
+          }
   
           const response = await fetch(
             'https://api-inference.huggingface.co/models/distilbert-base-uncased-finetuned-sst-2-english',
@@ -54,58 +46,36 @@ const SentimentAnalyzer: React.FC<SentimentAnalyzerProps> = ({ dataFrame }) => {
                 Authorization: `Bearer ${process.env.NEXT_PUBLIC_HUGGINGFACE_API_KEY}`,
                 'Content-Type': 'application/json',
               },
-              body: JSON.stringify({ inputs: row[selectedColumn] }),
+              body: JSON.stringify({ inputs: row[selectedColumn!] }),
             }
           );
   
           const result = await response.json();
-          console.log('API response for row:', result);
   
           if (result && Array.isArray(result[0])) {
-            const sentimentArray = result[0];
-            const bestResult = sentimentArray.reduce((prev, current) =>
+            const bestResult = result[0].reduce((prev, current) =>
               prev.score > current.score ? prev : current
             );
   
-            // Map the score to a sentiment label based on the ranges
-            const sentimentLabel =
-              bestResult.score >= sentimentRanges.positive[0] &&
-              bestResult.score <= sentimentRanges.positive[1]
-                ? 'POSITIVE'
-                : bestResult.score >= sentimentRanges.neutral[0] &&
-                  bestResult.score <= sentimentRanges.neutral[1]
-                ? 'NEUTRAL'
-                : 'NEGATIVE';
-  
-            console.log('Mapped Sentiment:', sentimentLabel);
-  
             return {
               ...row,
-              sentiment: sentimentLabel,
+              sentiment: bestResult.label,
               sentimentScore: bestResult.score,
             };
-          } else {
-            console.error('Unexpected API response structure:', result);
-            return {
-              ...row,
-              sentiment: 'Unknown',
-              sentimentScore: 0,
-            };
           }
+  
+          return { ...row, sentiment: 'Unknown', sentimentScore: 0 };
         })
       );
   
-      console.log('New rows with sentiment data:', newRows);
-  
       setUpdatedDataFrame({
-        columns: [...new Set([...dataFrame.columns, 'sentiment', 'sentimentScore'])],
+        columns: [...dataFrame.columns, 'sentiment', 'sentimentScore'],
         rows: newRows,
       });
     } catch (error) {
       console.error('Error during sentiment analysis:', error);
     } finally {
       setIsLoading(false);
-      console.log('Sentiment analysis completed.');
     }
   };
 
