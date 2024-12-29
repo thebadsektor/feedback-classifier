@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import Navbar from './components/Navbar';
 import CsvUpload from './components/CsvUpload';
 import SentimentAnalyzer from './components/SentimentAnalyzer';
-import ExecutiveSummarizer from './components/ExecutiveSummarizer';
 import Spinner from './components/Spinner';
 import { DataFrame } from 'danfojs';
 import { convertDanfoToCustomDataFrame } from './utils/convertDataFrame';
@@ -34,7 +33,6 @@ export default function Home() {
             {dataFrame && (
               <>
                 <SentimentAnalyzer dataFrame={convertDanfoToCustomDataFrame(dataFrame)} />
-                <ExecutiveSummarizer />
               </>
             )}
           </div>

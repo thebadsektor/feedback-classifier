@@ -3,7 +3,8 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 import { TagsInput } from 'react-tag-input-component';
 import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
-
+import Papa from 'papaparse';
+import ExecutiveSummary from './ExecutiveSummarizer';
 // Define a new type for tagging results
 type TaggingResult = {
     tags: string[];
@@ -134,6 +135,19 @@ export default function LLMTagging({ data, selectedColumn }: LLMTaggingProps) {
         setIsLoading(false); // Reset loading state
     };
 
+    const handleDownload = () => {
+        const csv = Papa.unparse(newData); // Convert the newData to CSV format
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        link.setAttribute('download', 'tagged_data.csv'); // Set the filename for the download
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link); // Clean up
+    };
+
     return (
         <div className="w-full p-6 bg-white rounded-lg shadow-md">
             <div className="flex flex-col items-center justify-center min-h-40 gap-4">
@@ -212,6 +226,17 @@ export default function LLMTagging({ data, selectedColumn }: LLMTaggingProps) {
                                 </TableBody>
                             </Table>
                         </TableContainer>
+
+                        {/* Download Button */}
+                        <div className="flex justify-end mt-4 mr-8 w-full">
+                            <a
+                                onClick={handleDownload}
+                                className="text-blue-500 hover:text-blue-600 cursor-pointer underline"
+                            >
+                                Download Final Dataframe as CSV
+                            </a>
+                        </div>
+                        <ExecutiveSummary />
                     </>
                 )}
             </div>
