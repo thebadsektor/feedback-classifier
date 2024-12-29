@@ -11,6 +11,8 @@ import {
   TableBody,
 } from "@mui/material";
 import { analyzeSentimentRuleBased } from '../utils/sentimentAnalysis'; // Import the new function
+import { GoogleGenerativeAI } from '@google/generative-ai'; // Import the Gemini API
+import { GoogleAIResponse } from "@/types/GoogleAIResponse";
 
 interface SentimentAnalyzerProps {
   dataFrame: DataFrame | null;
@@ -46,7 +48,7 @@ const SentimentAnalyzer: React.FC<SentimentAnalyzerProps> = ({ dataFrame }) => {
           // Check the selected mode
           if (selectedMode === 'sentiment-rule-based') {
             sentimentResult = analyzeSentimentRuleBased(String(row[selectedColumn]));
-          } else {
+          } else if (selectedMode === 'HuggingFace API') {
             const response = await fetch(
               'https://api-inference.huggingface.co/models/distilbert-base-uncased-finetuned-sst-2-english',
               {
@@ -60,12 +62,55 @@ const SentimentAnalyzer: React.FC<SentimentAnalyzerProps> = ({ dataFrame }) => {
             );
 
             const result = await response.json();
-            if (result && Array.isArray(result) && result.length > 0) {
-              sentimentResult = {
-                label: result[0].label,
-                score: result[0].score,
-              };
+            const positiveScore = result[0].score; // Assuming this is the positive score
+            let normalizedScore;
+            let label = 'Neutral';
+
+            if (positiveScore > 0.5) {
+              normalizedScore = positiveScore; // Use the score directly
+              label = 'Positive';
+            } else if (positiveScore <= 0.5 && positiveScore > 0) {
+              normalizedScore = positiveScore; // Treat as positive but close to neutral
+              label = 'Neutral';
+            } else {
+              normalizedScore = 1 - positiveScore; // Derive negative score
+              label = 'Negative';
             }
+
+            sentimentResult = {
+              label,
+              score: normalizedScore,
+            };
+          } else if (selectedMode === 'Gemini') {
+            const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY; // Ensure you have the API key
+            if (!apiKey) {
+              throw new Error('API key for Google Gemini is not defined.');
+            }
+            const geminiAI = new GoogleGenerativeAI(apiKey);
+            const model = geminiAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+
+            const geminiResponse: GoogleAIResponse = await model.generateContent(`Analyze the sentiment of: ${row[selectedColumn]}`);
+            const geminiText = geminiResponse.response.text();
+
+            // Simulate scoring based on the response
+            let normalizedScore;
+            let label = 'Neutral';
+
+            // Example logic to determine sentiment from the response
+            if (geminiText.includes('positive')) {
+              normalizedScore = 0.75; // Example score for positive sentiment
+              label = 'Positive';
+            } else if (geminiText.includes('negative')) {
+              normalizedScore = 0.25; // Example score for negative sentiment
+              label = 'Negative';
+            } else {
+              normalizedScore = 0.5; // Neutral sentiment
+            }
+
+            sentimentResult = {
+              label,
+              score: normalizedScore,
+            };
           }
 
           // Debugging: Log the sentimentResult
@@ -80,7 +125,8 @@ const SentimentAnalyzer: React.FC<SentimentAnalyzerProps> = ({ dataFrame }) => {
       );
 
       console.log('New rows with sentiment:', newRows);
-      setUpdatedDataFrame({ columns: [...dataFrame.columns, 'sentiment', 'sentimentScore'], rows: newRows });
+      const topRows = newRows.slice(0, 10); // Only take the top 10 rows
+      setUpdatedDataFrame({ columns: [...dataFrame.columns, 'sentiment', 'sentimentScore'], rows: topRows });
     } catch (error) {
       console.error("Error during sentiment analysis:", error);
     } finally {
