@@ -4,6 +4,7 @@ import { TagsInput } from 'react-tag-input-component';
 import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 import Papa from 'papaparse';
+import ExecutiveSummarizer from "./ExecutiveSummarizer";
 // Define a new type for tagging results
 type TaggingResult = {
     tags: string[];
@@ -11,7 +12,7 @@ type TaggingResult = {
 
 // Define a type for the expected structure of each row
 interface DataRow {
-    [key: string]: string | number | boolean | undefined; // Adjust types as necessary
+    [key: string]: string | number | boolean; // Added boolean to the type
 }
 
 interface LLMTaggingProps {
@@ -235,6 +236,9 @@ export default function LLMTagging({ data, selectedColumn }: LLMTaggingProps) {
                                 Download Final Dataframe as CSV
                             </a>
                         </div>
+
+                        {/* Add ExecutiveSummarizer with the tagged data */}
+                        <ExecutiveSummarizer dataFrame={{ rows: newData, columns: Object.keys(newData[0] || {}) }} />
                     </>
                 )}
             </div>

@@ -1,13 +1,17 @@
 import React from 'react';
 import { Bar } from 'react-chartjs-2';
-import { Chart, BarElement, Tooltip, CategoryScale, LinearScale } from 'chart.js'; // Import necessary components
+import { Chart, BarElement, Tooltip, CategoryScale, LinearScale } from 'chart.js';
 
 // Register the components
-Chart.register(BarElement, Tooltip, CategoryScale, LinearScale); // Register all necessary scales and elements
+Chart.register(BarElement, Tooltip, CategoryScale, LinearScale);
 
-const HorizontalBarChart: React.FC = () => {
+interface HorizontalBarChartProps {
+    label: string; // Define the label prop
+}
+
+const HorizontalBarChart: React.FC<HorizontalBarChartProps> = ({ label }) => {
     const data = {
-        labels: ['Sentiment Distribution'], // Label for the bar chart
+        labels: [label], // Use the label prop for the bar chart
         datasets: [
             {
                 label: 'Positive',
@@ -28,16 +32,16 @@ const HorizontalBarChart: React.FC = () => {
     };
 
     const options = {
-        indexAxis: 'y' as const, // Set the index axis to horizontal with type assertion
+        indexAxis: 'y' as const,
         maintainAspectRatio: false,
         plugins: {
             legend: {
-                display: false, // Disable the legend
+                display: false,
             },
             tooltip: {
                 callbacks: {
                     label: (context: any) => {
-                        return `${context.dataset.label}: ${context.raw}%`; // Show percentage in tooltip
+                        return `${context.dataset.label}: ${context.raw}%`;
                     },
                 },
             },
@@ -46,7 +50,6 @@ const HorizontalBarChart: React.FC = () => {
 
     return (
         <div className="w-full h-32">
-            <h3 className="text-lg font-semibold mb-2">Sentiment Distribution</h3>
             <Bar data={data} options={options} />
         </div>
     );

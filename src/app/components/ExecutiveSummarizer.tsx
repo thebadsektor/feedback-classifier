@@ -3,9 +3,10 @@ import GeminiAPI from './GeminiAPI';
 import { GoogleAIResponse } from '../../types/GoogleAIResponse';
 import DonutChart from './DonutChart';
 import HorizontalBarChart from './HorizontalBarChart';
+import { DataFrame } from '@/types/Dataframe';
 
 interface ExecutiveSummarizerProps {
-    dataFrame: any; // Adjust the type as necessary based on your DataFrame structure
+    dataFrame: DataFrame;
 }
 
 export default function ExecutiveSummarizer({ dataFrame }: ExecutiveSummarizerProps) {
@@ -50,7 +51,9 @@ export default function ExecutiveSummarizer({ dataFrame }: ExecutiveSummarizerPr
                 {showChart && (
                     <>
                         <DonutChart dataFrame={dataFrame} />
-                        <HorizontalBarChart />
+                        {dataFrame.columns.slice(dataFrame.columns.indexOf("sentimentScore") + 1).map((tag) => (
+                            <HorizontalBarChart key={tag} label={tag} />
+                        ))}
                     </>
                 )}
             </div>
