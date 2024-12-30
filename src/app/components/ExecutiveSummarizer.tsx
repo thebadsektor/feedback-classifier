@@ -5,6 +5,7 @@ import DonutChart from './DonutChart';
 import HorizontalBarChart from './HorizontalBarChart';
 import { DataFrame, CustomDataFrame } from '@/types/Dataframe';
 import * as dfd from "danfojs";
+import { DataFrame as DanfoDataFrame } from 'danfojs';
 
 interface ExecutiveSummarizerProps {
     dataFrame: DataFrame;
@@ -20,14 +21,86 @@ export default function ExecutiveSummarizer({ dataFrame }: ExecutiveSummarizerPr
     };
 
     const handleGenerateSummary = (dataFrame: DataFrame) => {
-        // Validity check for dataFrame
         if (!dataFrame || !dataFrame.isValid() || dataFrame.getRowCount() === 0) {
-            console.log("Invalid dataFrame or no data available to summarize");
+            console.error("Invalid DataFrame or no data available to summarize.");
             return;
         }
-
-        console.log('Generating executive summary for:', dataFrame);
-        setShowChart(true);
+    
+        const allColumns = dataFrame.columns;
+        const identifierColumn = allColumns[1]; // Dynamic identifier column
+        const tagColumns = allColumns.slice(allColumns.indexOf("sentimentScore") + 1);
+    
+        // Create Danfo DataFrame
+        let df = new dfd.DataFrame(dataFrame.rows, { columns: dataFrame.columns });
+        console.log("Initial DataFrame:", df.columns);
+    
+        // Add sentiment count columns
+        df.addColumn(
+            "Positive",
+            df["sentiment"].map((val: string) => (val === "Positive" ? 1 : 0))
+        );
+        df.addColumn(
+            "Negative",
+            df["sentiment"].map((val: string) => (val === "Negative" ? 1 : 0))
+        );
+        df.addColumn(
+            "Neutral",
+            df["sentiment"].map((val: string) => (val === "Neutral" ? 1 : 0))
+        );
+    
+        console.log("Columns After Adding Sentiment Columns:", df.columns);
+    
+        // Validate sentiment columns exist
+        const expectedSentimentColumns = ["Positive", "Negative", "Neutral"];
+        for (const col of expectedSentimentColumns) {
+            if (!df.columns.includes(col)) {
+                console.error(`Sentiment column '${col}' is missing after modification.`);
+                return;
+            }
+        }
+    
+        // Recreate DataFrame to refresh state
+        df = new dfd.DataFrame(df.toJSON(), { columns: df.columns });
+        console.log("Columns After Reinitialization:", df.columns);
+    
+        // Group by identifier column and aggregate
+        let sentimentSummary: dfd.DataFrame;
+        try {
+            sentimentSummary = df.groupby([identifierColumn]).agg({
+                sentimentScore: ["mean"],
+                Positive: ["sum"],
+                Negative: ["sum"],
+                Neutral: ["sum"],
+            });
+            console.log("Sentiment Summary:", sentimentSummary.toString());
+        } catch (err) {
+            console.error("Error during sentiment aggregation:", err);
+            return;
+        }
+    
+        // Aggregate tag columns
+        let tagSummary: dfd.DataFrame;
+        try {
+            const tagDf = df.loc({ columns: [identifierColumn, ...tagColumns] });
+            tagSummary = tagDf.groupby([identifierColumn]).sum();
+            console.log("Tag Summary:", tagSummary.toString());
+        } catch (err) {
+            console.error("Error during tag aggregation:", err);
+            return;
+        }
+    
+        // Merge sentiment and tag summaries
+        try {
+            const finalSummary = dfd.merge({
+                left: sentimentSummary,
+                right: tagSummary,
+                on: [identifierColumn],
+                how: "inner",
+            });
+            console.log("Final Summary:", finalSummary.toString());
+        } catch (err) {
+            console.error("Error during merge operation:", err);
+        }
     };
 
     return (
