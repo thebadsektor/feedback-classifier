@@ -30,38 +30,27 @@ export default function ExecutiveSummarizer({ dataFrame }: ExecutiveSummarizerPr
         const identifierColumn = allColumns[1]; // Dynamic identifier column
         const tagColumns = allColumns.slice(allColumns.indexOf("sentimentScore") + 1);
     
-        // Create Danfo DataFrame
-        let df = new dfd.DataFrame(dataFrame.rows, { columns: dataFrame.columns });
-        console.log("Initial DataFrame:", df.columns);
-    
-        // Add sentiment count columns
-        df.addColumn(
-            "Positive",
-            df["sentiment"].map((val: string) => (val === "Positive" ? 1 : 0))
-        );
-        df.addColumn(
-            "Negative",
-            df["sentiment"].map((val: string) => (val === "Negative" ? 1 : 0))
-        );
-        df.addColumn(
-            "Neutral",
-            df["sentiment"].map((val: string) => (val === "Neutral" ? 1 : 0))
-        );
-    
-        console.log("Columns After Adding Sentiment Columns:", df.columns);
-    
-        // Validate sentiment columns exist
-        const expectedSentimentColumns = ["Positive", "Negative", "Neutral"];
-        for (const col of expectedSentimentColumns) {
-            if (!df.columns.includes(col)) {
-                console.error(`Sentiment column '${col}' is missing after modification.`);
-                return;
-            }
+        // Validate the 'sentiment' column exists
+        if (!allColumns.includes("sentiment")) {
+            console.error("The 'sentiment' column is missing in the input DataFrame.");
+            return;
         }
     
-        // Recreate DataFrame to refresh state
-        df = new dfd.DataFrame(df.toJSON(), { columns: df.columns });
-        console.log("Columns After Reinitialization:", df.columns);
+        // Add sentiment columns directly to the rows
+        const newRows = dataFrame.rows.map((row) => {
+            const sentimentValue = row["sentiment"] as string;
+            return {
+                ...row,
+                Positive: sentimentValue === "Positive" ? 1 : 0,
+                Negative: sentimentValue === "Negative" ? 1 : 0,
+                Neutral: sentimentValue === "Neutral" ? 1 : 0,
+            };
+        });
+    
+        // Create a new DataFrame with the updated rows
+        const updatedColumns = [...dataFrame.columns, "Positive", "Negative", "Neutral"];
+        const df = new dfd.DataFrame(newRows, { columns: updatedColumns });
+        console.log("DataFrame After Adding Sentiment Columns:", df.columns);
     
         // Group by identifier column and aggregate
         let sentimentSummary: dfd.DataFrame;
