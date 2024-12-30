@@ -150,99 +150,97 @@ export default function LLMTagging({ data, selectedColumn }: LLMTaggingProps) {
     };
 
     return (
-        <div className="w-full p-6 bg-white rounded-lg shadow-md">
-            <div className="flex flex-col items-center justify-center min-h-40 gap-4">
-                <h3 className="text-lg font-semibold mb-2">Enhance via Tagging</h3>
-                <p className="text-gray-600">
-                    This component enhances the data by adding relevant tags.
-                </p>
-                <div className="mb-4 w-full">
-                    <h3 className="text-lg font-semibold mb-2">Tag Input</h3>
-                    <p className="text-gray-600 mb-2">
-                        Add tags to enhance the data.
-                    </p>
-                    <div style={{ width: '100%' }}>
-                        <TagsInput
-                            value={taggingResult?.tags || []}
-                            onChange={handleTagsChange} // Use the new handler
-                            name="tags"
-                            placeHolder="Enter tags"
-                            onKeyUp={(e) => {
-                                if (e.key === 'Enter') {
-                                    e.preventDefault();
-                                }
-                            }}
-                        />
-                    </div>
-                    <em>Press enter or comma to add new tag</em>
-                </div>
+        <>
+        <h3 className="text-lg font-semibold mb-2 text-center">Enhance via Tagging</h3>
+        <p className="text-gray-600 text-center mb-4">
+            This component enhances the data by adding relevant tags.
+        </p>
+        <div className="mb-4 w-full">
+            <h3 className="text-lg font-semibold mb-2">Tag Input</h3>
+            <p className="text-gray-600 mb-2">
+                Add tags to enhance the data.
+            </p>
+            <div style={{ width: '100%' }}>
+                <TagsInput
+                    value={taggingResult?.tags || []}
+                    onChange={handleTagsChange} // Use the new handler
+                    name="tags"
+                    placeHolder="Enter tags"
+                    onKeyUp={(e) => {
+                        if (e.key === 'Enter') {
+                            e.preventDefault();
+                        }
+                    }}
+                />
+            </div>
+            <em>Press enter or comma to add new tag</em>
+        </div>
 
-                <div className="w-full mt-4">
-                    <h3 className="text-lg font-semibold mb-2">Generated Prompt Preview</h3>
-                    <div className="bg-gray-100 border rounded p-4 text-sm text-gray-700">
-                        {promptPreview || "Start adding tags to preview the generated prompt."}
-                    </div>
-                </div>
-
-                <div className="flex justify-center mt-4">
-                    <button
-                        className="flex items-center bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed mb-4"
-                        onClick={handleRunTagging} // Attach the click handler
-                        disabled={isLoading} // Disable button while loading
-                    >
-                        {isLoading ? (
-                            <>
-                                <CircularProgress size={24} className="mr-2" /> {/* Spinner */}
-                                Tagging in Progress
-                            </>
-                        ) : (
-                            "Run LLM Tagging"
-                        )}
-                    </button>
-                </div>
-
-                {/* Display the first 5 rows of updated data only if tagging is done */}
-                {isTaggingDone && (
-                    <>
-                        <h3 className="text-lg font-semibold mb-2 text-left w-full">Data Preview (First 5 Rows)</h3>
-                        <TableContainer component={Paper} style={{ maxHeight: 400, overflow: 'auto' }}>
-                            <Table>
-                                <TableHead>
-                                    <TableRow>
-                                        {newData.length > 0 && Object.keys(newData[0]).map((key) => (
-                                            <TableCell key={key}>{key}</TableCell>
-                                        ))}
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {newData.slice(0, 5).map((row, index) => (
-                                        <TableRow key={index}>
-                                            {Object.keys(row).map((key) => (
-                                                <TableCell key={key}>
-                                                    {row[key] !== undefined ? row[key].toString() : "N/A"}
-                                                </TableCell>
-                                            ))}
-                                        </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
-
-                        {/* Download Button */}
-                        <div className="flex justify-end mt-4 mr-8 w-full">
-                            <a
-                                onClick={handleDownload}
-                                className="text-blue-500 hover:text-blue-600 cursor-pointer underline"
-                            >
-                                Download Final Dataframe as CSV
-                            </a>
-                        </div>
-
-                        {/* Add ExecutiveSummarizer with the tagged data */}
-                        <ExecutiveSummarizer dataFrame={new CustomDataFrame(Object.keys(newData[0] || {}), newData)} />
-                    </>
-                )}
+        <div className="w-full mt-4">
+            <h3 className="text-lg font-semibold mb-2">Generated Prompt Preview</h3>
+            <div className="bg-gray-100 border rounded p-4 text-sm text-gray-700">
+                {promptPreview || "Start adding tags to preview the generated prompt."}
             </div>
         </div>
+
+        <div className="flex justify-center mt-4">
+            <button
+                className="flex items-center bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed mb-4"
+                onClick={handleRunTagging} // Attach the click handler
+                disabled={isLoading} // Disable button while loading
+            >
+                {isLoading ? (
+                    <>
+                        <CircularProgress size={24} className="mr-2" /> {/* Spinner */}
+                        Tagging in Progress
+                    </>
+                ) : (
+                    "Run LLM Tagging"
+                )}
+            </button>
+        </div>
+
+        {/* Display the first 5 rows of updated data only if tagging is done */}
+        {isTaggingDone && (
+            <>
+                <h3 className="text-lg font-semibold mb-2 text-left w-full">Data Preview (First 5 Rows)</h3>
+                <TableContainer component={Paper} style={{ maxHeight: 400, overflow: 'auto' }}>
+                    <Table>
+                        <TableHead>
+                            <TableRow>
+                                {newData.length > 0 && Object.keys(newData[0]).map((key) => (
+                                    <TableCell key={key}>{key}</TableCell>
+                                ))}
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {newData.slice(0, 5).map((row, index) => (
+                                <TableRow key={index}>
+                                    {Object.keys(row).map((key) => (
+                                        <TableCell key={key}>
+                                            {row[key] !== undefined ? row[key].toString() : "N/A"}
+                                        </TableCell>
+                                    ))}
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+
+                {/* Download Button */}
+                <div className="flex justify-end mt-4 w-full">
+                    <a
+                        onClick={handleDownload}
+                        className="text-blue-500 hover:text-blue-600 cursor-pointer underline mr-16"
+                    >
+                        Download Final Dataframe as CSV
+                    </a>
+                </div>
+
+                {/* Add ExecutiveSummarizer with the tagged data */}
+                <ExecutiveSummarizer dataFrame={new CustomDataFrame(Object.keys(newData[0] || {}), newData)} />
+            </>
+        )}
+        </>
     );
 }

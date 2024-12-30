@@ -140,11 +140,10 @@ export default function CsvUpload({ setDataFrame }: CsvUploadProps) {
         )}
 
         {processedData.length > 0 && (
-          <div className="mt-4">
+          <>
             <h3 className="text-lg font-semibold mb-2">Dataframe Preview (First 5 Rows):</h3>
-            <TableContainer component={Paper} style={{ maxHeight: 400, maxWidth: 800, overflow: 'auto' }}>
-              <div style={{ overflowX: 'auto' }}>
-                <Table stickyHeader>
+            <TableContainer component={Paper} style={{ maxHeight: 400, overflow: 'auto' }}>
+              <Table>
                   <TableHead>
                     <TableRow>
                       {Object.keys(processedData[0]).map((key) => (
@@ -162,9 +161,8 @@ export default function CsvUpload({ setDataFrame }: CsvUploadProps) {
                     ))}
                   </TableBody>
                 </Table>
-              </div>
             </TableContainer>
-          </div>
+          </>
         )}
       </div>
     </div>

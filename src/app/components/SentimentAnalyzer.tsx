@@ -250,13 +250,13 @@ const SentimentAnalyzer: React.FC<SentimentAnalyzerProps> = ({ dataFrame }) => {
           </h3>
           <TableContainer
             component={Paper}
-            style={{ maxHeight: 400, maxWidth: 800, overflow: "auto" }}
+            style={{ maxHeight: 400, overflow: "auto" }}
           >
             <Table>
               <TableHead>
                 <TableRow>
                   {updatedDataFrame.columns.map((col) => (
-                    <TableCell key={col}>{col}</TableCell>
+                    <TableCell key={col} style={{ border: '1px solid #ccc' }}>{col}</TableCell>
                   ))}
                 </TableRow>
               </TableHead>
@@ -264,7 +264,7 @@ const SentimentAnalyzer: React.FC<SentimentAnalyzerProps> = ({ dataFrame }) => {
                 {updatedDataFrame.rows.slice(0, 5).map((row, index) => (
                   <TableRow key={index}>
                     {updatedDataFrame.columns.map((col) => (
-                      <TableCell key={col}>
+                      <TableCell key={col} style={{ border: '1px solid #ccc' }}>
                         {row[col] !== undefined ? row[col].toString() : "N/A"}
                       </TableCell>
                     ))}
@@ -273,12 +273,14 @@ const SentimentAnalyzer: React.FC<SentimentAnalyzerProps> = ({ dataFrame }) => {
               </TableBody>
             </Table>
           </TableContainer>
-          {isLLMTaggingVisible && (
-            <LLMTagging
-              data={updatedDataFrame.rows}
-              selectedColumn={selectedColumn}
-            />
-          )}
+          <div className="mt-8">
+            {isLLMTaggingVisible && (
+              <LLMTagging
+                data={updatedDataFrame.rows}
+                selectedColumn={selectedColumn}
+              />
+            )}
+          </div>
         </>
       )}
     </div>

@@ -27,7 +27,7 @@ export default function Home() {
         <Spinner />
       ) : (
         <main className="container mx-auto p-4 min-h-screen mt-16 z-55">
-          <div className="h-full flex flex-col items-center justify-center gap-8 max-w-4xl mx-auto bg-gray-50 rounded-xl shadow-lg p-8">
+          <div className="w-full h-full flex flex-col items-center justify-center gap-8 bg-gray-50 rounded-xl shadow-lg p-8">
             <CsvUpload setDataFrame={setDataFrame} />
             {/* TODO: Make use of dataFrame */}
             {dataFrame && (
