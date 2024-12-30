@@ -1,11 +1,8 @@
 import { useState } from 'react';
 import GeminiAPI from './GeminiAPI';
 import { GoogleAIResponse } from '../../types/GoogleAIResponse';
-import DonutChart from './DonutChart';
-import HorizontalBarChart from './HorizontalBarChart';
-import { DataFrame, CustomDataFrame } from '@/types/Dataframe';
+import { DataFrame } from '@/types/Dataframe';
 import * as dfd from "danfojs";
-import { DataFrame as DanfoDataFrame } from 'danfojs';
 
 interface ExecutiveSummarizerProps {
     dataFrame: DataFrame;
@@ -13,7 +10,7 @@ interface ExecutiveSummarizerProps {
 
 export default function ExecutiveSummarizer({ dataFrame }: ExecutiveSummarizerProps) {
     const [summaryResult, setSummaryResult] = useState<GoogleAIResponse | null>(null);
-    const [showChart, setShowChart] = useState(false);
+    const [showChart] = useState(false);
 
     const handleResult = (result: GoogleAIResponse) => {
         console.log('Executive Summary Result:', result);
@@ -119,10 +116,7 @@ export default function ExecutiveSummarizer({ dataFrame }: ExecutiveSummarizerPr
 
                 {showChart && (
                     <>
-                        <DonutChart dataFrame={dataFrame} />
-                        {dataFrame.columns.slice(dataFrame.columns.indexOf("sentimentScore") + 1).map((tag) => (
-                            <HorizontalBarChart key={tag} label={tag} />
-                        ))}
+                        
                     </>
                 )}
             </div>
