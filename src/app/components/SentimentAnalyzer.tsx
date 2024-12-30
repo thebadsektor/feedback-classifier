@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { DataFrame, DataRow } from "../../types/Dataframe";
+import { DataFrame, DataRow, CustomDataFrame } from "../../types/Dataframe";
 import {
   TableContainer,
   Table,
@@ -141,10 +141,10 @@ const SentimentAnalyzer: React.FC<SentimentAnalyzerProps> = ({ dataFrame }) => {
 
       console.log("New rows with sentiment:", newRows);
       // Set the entire newRows instead of slicing
-      setUpdatedDataFrame({
-        columns: [...dataFrame.columns, "sentiment", "sentimentScore"],
-        rows: newRows,
-      });
+      setUpdatedDataFrame(new CustomDataFrame(
+        [...dataFrame.columns, "sentiment", "sentimentScore"], // Columns
+        newRows // Rows
+      ));
       setIsLLMTaggingVisible(true);
     } catch (error) {
       console.error("Error during sentiment analysis:", error);

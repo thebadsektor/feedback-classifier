@@ -3,7 +3,8 @@ import GeminiAPI from './GeminiAPI';
 import { GoogleAIResponse } from '../../types/GoogleAIResponse';
 import DonutChart from './DonutChart';
 import HorizontalBarChart from './HorizontalBarChart';
-import { DataFrame } from '@/types/Dataframe';
+import { DataFrame, CustomDataFrame } from '@/types/Dataframe';
+import * as dfd from "danfojs";
 
 interface ExecutiveSummarizerProps {
     dataFrame: DataFrame;
@@ -18,7 +19,13 @@ export default function ExecutiveSummarizer({ dataFrame }: ExecutiveSummarizerPr
         setSummaryResult(result);
     };
 
-    const handleGenerateSummary = () => {
+    const handleGenerateSummary = (dataFrame: DataFrame) => {
+        // Validity check for dataFrame
+        if (!dataFrame || !dataFrame.isValid() || dataFrame.getRowCount() === 0) {
+            console.log("Invalid dataFrame or no data available to summarize");
+            return;
+        }
+
         console.log('Generating executive summary for:', dataFrame);
         setShowChart(true);
     };
@@ -34,7 +41,7 @@ export default function ExecutiveSummarizer({ dataFrame }: ExecutiveSummarizerPr
                 
                 <div className="flex justify-center mt-4">
                     <button
-                        onClick={handleGenerateSummary}
+                        onClick={() => handleGenerateSummary(dataFrame)}
                         className="flex items-center bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md transition-colors"
                     >
                         Generate Executive Summary

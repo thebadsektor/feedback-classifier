@@ -1,5 +1,5 @@
 import { DataFrame as DanfoDataFrame } from 'danfojs';
-import { DataFrame, DataRow } from '../../types/Dataframe';
+import { DataFrame, DataRow, CustomDataFrame } from '../../types/Dataframe';
 
 export const convertDanfoToCustomDataFrame = (danfoDf: DanfoDataFrame): DataFrame => {
   const columns: string[] = danfoDf.columns;
@@ -11,5 +11,5 @@ export const convertDanfoToCustomDataFrame = (danfoDf: DanfoDataFrame): DataFram
     return rowObject;
   });
 
-  return { columns, rows };
+  return new CustomDataFrame(columns, rows);
 };

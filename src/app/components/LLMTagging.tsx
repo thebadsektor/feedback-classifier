@@ -5,6 +5,7 @@ import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper
 import CircularProgress from '@mui/material/CircularProgress';
 import Papa from 'papaparse';
 import ExecutiveSummarizer from "./ExecutiveSummarizer";
+import { CustomDataFrame } from '../../types/Dataframe'; // Import CustomDataFrame
 // Define a new type for tagging results
 type TaggingResult = {
     tags: string[];
@@ -238,7 +239,7 @@ export default function LLMTagging({ data, selectedColumn }: LLMTaggingProps) {
                         </div>
 
                         {/* Add ExecutiveSummarizer with the tagged data */}
-                        <ExecutiveSummarizer dataFrame={{ rows: newData, columns: Object.keys(newData[0] || {}) }} />
+                        <ExecutiveSummarizer dataFrame={new CustomDataFrame(Object.keys(newData[0] || {}), newData)} />
                     </>
                 )}
             </div>
