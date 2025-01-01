@@ -95,6 +95,7 @@ export default function ExecutiveSummarizer({ dataFrame }: ExecutiveSummarizerPr
                     className="flex items-center bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md transition-colors"
                 >
                     Generate Executive Summary
+                    {summaryResult && true}
                 </button>
             </div>
         </>
