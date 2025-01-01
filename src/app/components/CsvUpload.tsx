@@ -93,6 +93,9 @@ export default function CsvUpload({ setDataFrame }: CsvUploadProps) {
 
   return (
     <div className="w-full p-6 bg-white rounded-lg shadow-md">
+      <div className="flex flex-col gap-4">
+          <h1 className="text-2xl font-bold">Data Processing</h1>
+      </div>
       <h3 className="text-lg font-semibold mb-2 text-center">Upload CSV</h3>
       <p className="text-gray-600 text-center mb-4">
           This uploads a CSV file and allows you to select columns to process.

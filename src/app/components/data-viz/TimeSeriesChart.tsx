@@ -1,6 +1,6 @@
 import React from 'react';
 import { Line } from 'react-chartjs-2';
-import { Chart as ChartJS, LineElement, PointElement, LinearScale, Title, Tooltip, Legend, CategoryScale } from 'chart.js';
+import { Chart as ChartJS, LineElement, PointElement, LinearScale, Title, Tooltip, Legend, CategoryScale, TooltipItem } from 'chart.js';
 
 ChartJS.register(LineElement, PointElement, LinearScale, Title, Tooltip, Legend, CategoryScale);
 
@@ -22,7 +22,7 @@ export default function TimeSeriesChart({ style }: TimeSeriesChartProps) {
             },
             {
                 label: 'Neutral',
-                data: [10, 50, 350, 400, 300, 200, 100],
+                data: [10, 20, 30, 100, 150, 130, 50],
                 backgroundColor: 'rgba(158, 158, 158, 0.2)',
                 borderColor: '#9E9E9E',
                 borderWidth: 2,
@@ -30,7 +30,7 @@ export default function TimeSeriesChart({ style }: TimeSeriesChartProps) {
             },
             {
                 label: 'Negative',
-                data: [50, 100, 550, 300, 444, 300, 230],
+                data: [400, 333, 250, 350, 200, 500, 400],
                 backgroundColor: 'rgba(244, 67, 54, 0.2)',
                 borderColor: '#F44336',
                 borderWidth: 2,
@@ -48,7 +48,7 @@ export default function TimeSeriesChart({ style }: TimeSeriesChartProps) {
             },
             tooltip: {
                 callbacks: {
-                    label: function(tooltipItem: any) {
+                    label: function(tooltipItem: TooltipItem<'line'>) {
                         return `${tooltipItem.dataset.label}: ${tooltipItem.raw}`;
                     },
                 },
