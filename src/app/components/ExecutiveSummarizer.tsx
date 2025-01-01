@@ -9,7 +9,6 @@ interface ExecutiveSummarizerProps {
 
 export default function ExecutiveSummarizer({ dataFrame }: ExecutiveSummarizerProps) {
     const [summaryResult] = useState<GoogleAIResponse | null>(null);
-    const [showChart] = useState(false);
 
     const handleGenerateSummary = (dataFrame: DataFrame) => {
         if (!dataFrame || !dataFrame.isValid() || dataFrame.getRowCount() === 0) {
@@ -98,19 +97,6 @@ export default function ExecutiveSummarizer({ dataFrame }: ExecutiveSummarizerPr
                     Generate Executive Summary
                 </button>
             </div>
-
-            {summaryResult && (
-                <div className="mt-4">
-                    <h4 className="font-semibold">Summary Result:</h4>
-                    <p>{JSON.stringify(summaryResult)}</p>
-                </div>
-            )}
-
-            {showChart && (
-                <>
-                    
-                </>
-            )}
         </>
     );
 }

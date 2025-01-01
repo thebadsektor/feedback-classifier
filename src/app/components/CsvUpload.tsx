@@ -141,6 +141,9 @@ export default function CsvUpload({ setDataFrame }: CsvUploadProps) {
 
         {processedData.length > 0 && (
           <>
+            <p className="text-gray-600">
+              Total Rows: 100
+            </p>
             <h3 className="text-lg font-semibold mb-2">Dataframe Preview (First 5 Rows):</h3>
             <TableContainer component={Paper} style={{ maxHeight: 400, overflow: 'auto' }}>
               <Table>
