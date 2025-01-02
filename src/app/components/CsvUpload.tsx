@@ -4,7 +4,6 @@
 import { ChangeEvent, useState } from 'react';
 import Papa from 'papaparse';
 import { DataFrame } from 'danfojs';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 
 interface CsvUploadProps {

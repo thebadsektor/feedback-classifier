@@ -5,30 +5,37 @@ import { Chart as ChartJS, BarElement, CategoryScale, LinearScale, Title, Toolti
 ChartJS.register(BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend);
 
 interface HorizontalStackedBarGraphProps {
+    tagCounts: { [key: string]: { positive: number; neutral: number; negative: number } };
     style?: React.CSSProperties;
 }
 
-const HorizontalStackedBarGraph: React.FC<HorizontalStackedBarGraphProps> = ({ style }) => {
-    const data = {
-        labels: ['January', 'February', 'March', 'April', 'May'],
-        datasets: [
-            {
-                label: 'Positive',
-                data: [300, 400, 350, 450, 500],
-                backgroundColor: '#4CAF50',
-            },
-            {
-                label: 'Neutral',
-                data: [50, 60, 70, 80, 90],
-                backgroundColor: '#9E9E9E',
-            },
-            {
-                label: 'Negative',
-                data: [100, 90, 80, 70, 60],
-                backgroundColor: '#F44336',
-            },
-        ],
-    };
+
+const HorizontalStackedBarGraph: React.FC<HorizontalStackedBarGraphProps> = ({ tagCounts, style }) => {
+    // Transform `tagCounts` into Chart.js format
+    console.log("Tag Counts in Chart Component:", tagCounts);
+    
+    const labels = Object.keys(tagCounts);
+    const datasets = [
+        {
+            label: 'Positive',
+            data: labels.map((tag) => tagCounts[tag].positive),
+            backgroundColor: '#4CAF50',
+        },
+        {
+            label: 'Neutral',
+            data: labels.map((tag) => tagCounts[tag].neutral),
+            backgroundColor: '#9E9E9E',
+        },
+        {
+            label: 'Negative',
+            data: labels.map((tag) => tagCounts[tag].negative),
+            backgroundColor: '#F44336',
+        },
+    ];
+
+    const data = { labels, datasets };
+
+    console.log("Chart Data:", { labels, datasets });
 
     const options = {
         responsive: true,
@@ -39,29 +46,21 @@ const HorizontalStackedBarGraph: React.FC<HorizontalStackedBarGraphProps> = ({ s
             },
             tooltip: {
                 callbacks: {
-                    label: function(tooltipItem: TooltipItem<'bar'>) {
+                    label: function (tooltipItem: TooltipItem<'bar'>) {
                         const label = tooltipItem.dataset.label || '';
                         const value = tooltipItem.raw;
                         return `${label}: ${value}`;
                     },
                 },
             },
-            datalabels: {
-                anchor: 'center' as const,
-                align: 'center' as const,
-                formatter: (value: number) => value,
-                color: 'white' as const,
-            },
         },
         scales: {
             x: {
                 stacked: true,
-                display: false,
             },
             y: {
                 stacked: true,
-                barThickness: 5,
-                position: 'top' as const,
+                barThickness: 30,
             },
         },
     };
@@ -73,4 +72,4 @@ const HorizontalStackedBarGraph: React.FC<HorizontalStackedBarGraphProps> = ({ s
     );
 };
 
-export default HorizontalStackedBarGraph; 
+export default HorizontalStackedBarGraph;

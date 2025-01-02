@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { TagsInput } from 'react-tag-input-component';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -42,6 +42,7 @@ export default function LLMTagging({ data, selectedColumn }: LLMTaggingProps) {
     const [isTaggingDone, setIsTaggingDone] = useState<boolean>(false); // State to track tagging completion
     const [newData, setNewData] = useState<DataRow[]>([]); // State for new data
     const [isLoading, setIsLoading] = useState<boolean>(false); // Loading state for tagging
+    const [tagCounts, setTagCounts] = useState<{ [key: string]: { positive: number; neutral: number; negative: number } }>({});
 
     // Initialize the Gemini model
     const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY; // Ensure you have the API key
@@ -75,48 +76,58 @@ export default function LLMTagging({ data, selectedColumn }: LLMTaggingProps) {
             console.error("Selected column is null. Cannot run tagging.");
             return;
         }
-
+    
         setIsLoading(true); // Set loading state to true
         console.log("Selected Column:", selectedColumn);
         console.log("Available Columns in Data:", Object.keys(updatedData[0] || {}));
-
+    
         // Append tags as new headers to the updatedData
         const newHeaders = taggingResult?.tags || [];
         const tempData = updatedData.map(row => {
+            const updatedRow = { ...row };
             newHeaders.forEach(tag => {
-                row[tag] = false; // Initialize new headers with false
+                if (!(tag in updatedRow)) {
+                    updatedRow[tag] = false; // Ensure all tags are initialized for every row
+                }
             });
-            return row;
+            return updatedRow;
         });
-
-        const feedbackColumn = tempData.map(row => row[selectedColumn]).filter((feedback): feedback is string => feedback !== undefined && feedback !== null).map(String);
-        
+    
+        const feedbackColumn = tempData
+            .map(row => row[selectedColumn])
+            .filter((feedback): feedback is string => feedback !== undefined && feedback !== null)
+            .map(String);
+    
         console.log("Feedback Column:", feedbackColumn);
-
-        const responses = await Promise.all(feedbackColumn.map(async (feedback) => {
-            const prompt = generatePrompt(taggingResult?.tags || []);
-            console.log("Generated Prompt:", prompt);
-
-            const geminiResponse = await model.generateContent(`Categorize the feedback: "${feedback}" based on the following categories: ${prompt}`);
-            console.log("Gemini Response:", geminiResponse);
-
-            return geminiResponse.response.text(); // Assuming the response is in the expected format
-        }));
-
+    
+        const responses = await Promise.all(
+            feedbackColumn.map(async feedback => {
+                const prompt = generatePrompt(taggingResult?.tags || []);
+                console.log("Generated Prompt:", prompt);
+    
+                const geminiResponse = await model.generateContent(
+                    `Categorize the feedback: "${feedback}" based on the following categories: ${prompt}`
+                );
+                console.log("Gemini Response:", geminiResponse);
+    
+                return geminiResponse.response.text(); // Assuming the response is in the expected format
+            })
+        );
+    
         console.log("Responses from Gemini:", responses);
-
+    
         // Process the JSON response and append boolean values to their respective headers
         const processedData = tempData.map((row, index) => {
-            const cleanedResponse = responses[index].replace(/```json|```/g, '').trim(); // Remove code block delimiters
+            const cleanedResponse = responses[index].replace(/```json|```/g, "").trim(); // Remove code block delimiters
             console.log("Cleaned Response:", cleanedResponse); // Debugging log for cleaned response
-
+    
             try {
                 const parsedResponse = JSON.parse(cleanedResponse); // Parse the cleaned response
-
+    
                 // Validate the response structure
                 const expectedKeys = taggingResult?.tags || [];
                 const isValidResponse = expectedKeys.every(key => key in parsedResponse);
-
+    
                 if (isValidResponse) {
                     Object.keys(parsedResponse).forEach(tag => {
                         if (row) {
@@ -130,15 +141,23 @@ export default function LLMTagging({ data, selectedColumn }: LLMTaggingProps) {
                 console.error("Error parsing JSON:", error); // Log any JSON parsing errors
                 console.error("Original Response:", responses[index]); // Log the original response for debugging
             }
-
+    
             return row;
         });
-
+    
         setNewData(processedData); // Update the state with the new data
         setUpdatedData(processedData); // Update the original data state
         setIsTaggingDone(true); // Mark tagging as done
         setIsLoading(false); // Reset loading state
     };
+    
+    // Log updated newData when it changes
+    useEffect(() => {
+        if (newData.length > 0) {
+            console.log("Updated Data with Tags:", newData);
+        }
+    }, [newData]);
+    
 
     const handleDownload = () => {
         const csv = Papa.unparse(newData); // Convert the newData to CSV format
@@ -152,6 +171,44 @@ export default function LLMTagging({ data, selectedColumn }: LLMTaggingProps) {
         link.click();
         document.body.removeChild(link); // Clean up
     };
+
+    // Function to process newData and count tags based on sentiment
+    const processTagCounts = () => {
+        if (!newData || newData.length === 0) return;
+    
+        const tags = taggingResult?.tags || [];
+        const counts: { [key: string]: { positive: number; neutral: number; negative: number } } = {};
+    
+        tags.forEach(tag => {
+            counts[tag] = { positive: 0, neutral: 0, negative: 0 };
+        });
+    
+        newData.forEach(row => {
+            tags.forEach(tag => {
+                if (row[tag] === true) {
+                    const sentiment = row.sentiment;
+    
+                    if (sentiment === "Positive") {
+                        counts[tag].positive += 1;
+                    } else if (sentiment === "Neutral") {
+                        counts[tag].neutral += 1;
+                    } else if (sentiment === "Negative") {
+                        counts[tag].negative += 1;
+                    }
+                }
+            });
+        });
+    
+        console.log("Processed Counts:", counts); // Debugging log for counts
+        setTagCounts(counts);
+    };    
+
+    // Call the function where appropriate, e.g., after tagging is done
+    useEffect(() => {
+        if (isTaggingDone) {
+            processTagCounts(); // Process and print tag counts when tagging is done
+        }
+    }, [isTaggingDone]);
 
     return (
         <>
@@ -232,7 +289,10 @@ export default function LLMTagging({ data, selectedColumn }: LLMTaggingProps) {
                     </a>
                 </div>
                 <div className="flex justify-center bg-gray-100 p-4 rounded-md mt-4">
-                    <HorizontalStackedBarGraph style={{ width: '100%', height: '100%' }}/>
+                <HorizontalStackedBarGraph
+                    tagCounts={tagCounts} // Pass the calculated tag counts
+                    style={{ width: '100%', height: '100%' }}
+                />
                 </div>
 
                 {/* Add ExecutiveSummarizer with the tagged data */}

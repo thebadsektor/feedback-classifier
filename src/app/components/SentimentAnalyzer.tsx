@@ -2,15 +2,6 @@
 
 import React, { useState } from "react";
 import { DataFrame, DataRow, CustomDataFrame } from "../../types/Dataframe";
-import {
-  TableContainer,
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
-  Paper,
-} from "@mui/material";
 import { analyzeSentimentRuleBased } from "../utils/sentimentAnalysis"; // Import the new function
 import { GoogleGenerativeAI } from "@google/generative-ai"; // Import the Gemini API
 import { GoogleAIResponse } from "@/types/GoogleAIResponse";

@@ -30,7 +30,7 @@ export default function ExecutiveDashboard() {
                 </div>
                 <div className="bg-gray-100 p-4 rounded-md mt-4" style={{minHeight:400}}>
                     <div className="flex items-center justify-center h-full w-full" style={{ minHeight: '400px' }}>
-                        <HorizontalStackedBarGraph style={{ width: '100%', height: '100%' }}/>
+                        {/* <HorizontalStackedBarGraph style={{ width: '100%', height: '100%' }}/> */}
                     </div>
                 </div>
                 <div className="bg-gray-100 p-4 rounded-md mt-4" style={{minHeight:400}}>
