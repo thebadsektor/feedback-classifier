@@ -7,7 +7,6 @@ import SentimentAnalyzer from './components/SentimentAnalyzer';
 import Spinner from './components/Spinner';
 import { DataFrame } from 'danfojs';
 import { convertDanfoToCustomDataFrame } from './utils/convertDataFrame';
-import ExecutiveDashboard from './components/ExecutiveDashboard';
 export default function Home() {
   const [dataFrame, setDataFrame] = useState<DataFrame | null>(null);
   const [loading, setLoading] = useState(true);
@@ -35,9 +34,6 @@ export default function Home() {
                 <SentimentAnalyzer dataFrame={convertDanfoToCustomDataFrame(dataFrame)} />
               </>
             )}
-            <div className="mt-4 w-full">
-              <ExecutiveDashboard />
-            </div>
           </div>
         </main>
       )}
