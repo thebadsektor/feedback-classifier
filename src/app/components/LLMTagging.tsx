@@ -233,7 +233,7 @@ export default function LLMTagging({ data, selectedColumn }: LLMTaggingProps) {
                         onClick={handleDownload}
                         className="text-blue-500 hover:text-blue-600 cursor-pointer underline mr-16"
                     >
-                        Download Final Dataframe as CSV
+                        Download Enhanced Dataframe as CSV
                     </a>
                 </div>
 

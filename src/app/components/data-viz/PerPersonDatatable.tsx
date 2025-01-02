@@ -10,7 +10,7 @@ interface DataItem {
 
 const initialData: DataItem[] = [
     { id: 1, name: 'Alice', status: 'Positive' },
-    { id: 2, name: 'Bob', status: 'Neutral' },
+    { id: 2, name: 'Brigida', status: 'Neutral' },
     { id: 3, name: 'Charlie', status: 'Negative' },
     { id: 4, name: 'David', status: 'Positive' },
     { id: 5, name: 'Eve', status: 'Neutral' },
@@ -35,8 +35,8 @@ const PerPersonDatatable: React.FC = () => {
     ];
 
     return (
-        <div style={{ height: '100%', width: '100%' }}>
-            <h2>Per Person Datatable</h2>
+        <div style={{ height: '100%', width: '100%', backgroundColor: 'white' }}>
+            <h2>Individual Sentiment</h2>
             <TextField
                 label="Search by name"
                 variant="outlined"
