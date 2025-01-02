@@ -288,11 +288,11 @@ export default function LLMTagging({ data, selectedColumn }: LLMTaggingProps) {
                         Download Enhanced Dataframe as CSV
                     </a>
                 </div>
-                <div className="flex justify-center bg-gray-100 p-4 rounded-md mt-4">
-                <HorizontalStackedBarGraph
-                    tagCounts={tagCounts} // Pass the calculated tag counts
-                    style={{ width: '100%', height: '100%' }}
-                />
+                <div className="flex justify-center bg-gray-100 p-4 rounded-md mt-4 w-full">
+                    <HorizontalStackedBarGraph
+                        tagCounts={tagCounts} // Pass the calculated tag counts
+                        style={{ width: '100%', height: '100%' }}
+                    />
                 </div>
 
                 {/* Add ExecutiveSummarizer with the tagged data */}
