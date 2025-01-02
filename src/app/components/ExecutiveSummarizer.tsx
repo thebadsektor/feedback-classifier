@@ -98,24 +98,77 @@ export default function ExecutiveSummarizer({
       return "";
     }
 
+    // Extract feedback and names from the dataFrame (assuming third column is feedback and first column is names)
+    const feedbackEntries = dataFrame.rows.map((row) => {
+      const name = row[dataFrame.columns[0]]; // Assuming the first column contains names
+      const feedback = row[dataFrame.columns[2]]; // Assuming the third column contains feedback
+      return { name, feedback };
+    });
+
+    // Format feedback entries with names and quotes
+    const formattedFeedbacks = feedbackEntries
+      .map((entry) => {
+        if (entry.name && entry.feedback) {
+          return `**${entry.name}**: "${entry.feedback}"`;
+        }
+        return null;
+      })
+      .filter(Boolean)
+      .join("\n");
+
     return `
-          Analyze the following aggregated sentiment analysis data from employee performance reviews to provide organizational insights and actionable recommendations for improving the review process and fostering employee growth:
-      
-          Overall Sentiment Counts (aggregated across all reviews):
-          ${JSON.stringify(summaryResult.sentimentCounts, null, 2)}
-      
-          Quarterly Sentiment Trends (tracking changes in sentiment over time):
-          ${JSON.stringify(summaryResult.sentimentTrends, null, 2)}
-      
-          Instructions:
-          - Summarize the overall sentiment breakdown and its implications for the organization.
-          - Analyze the quarterly sentiment trends to identify any significant changes or patterns, such as shifts in employee morale or performance perceptions.
-          - Provide generalized recommendations for:
-            1. Improving positive sentiment across reviews.
-            2. Addressing and mitigating negative sentiment trends.
-            3. Enhancing the performance review process to better align with employee expectations and organizational goals.
-          - Avoid employee-specific recommendations; focus instead on actionable insights for improving overall organizational performance and morale.
-        `;
+        ### Sentiment Analysis and Organizational Insights
+
+        **Aggregated Sentiment Analysis Data:**
+
+        #### Overall Sentiment Counts (aggregated across all reviews):
+        \`\`\`json
+        ${JSON.stringify(summaryResult.sentimentCounts, null, 2)}
+        \`\`\`
+
+        #### Quarterly Sentiment Trends (tracking changes in sentiment over time):
+        \`\`\`json
+        ${JSON.stringify(summaryResult.sentimentTrends, null, 2)}
+        \`\`\`
+
+        ---
+
+        ### Employee Feedback Highlights
+
+        Here are some key feedback quotes from employees:
+
+        ${formattedFeedbacks}
+
+        ---
+
+        ### Instructions
+
+        Analyze the above sentiment analysis data and feedback to provide organizational insights and actionable recommendations. Focus on the following:
+
+        1. **Summarize Overall Sentiment Breakdown:**
+        - Highlight the implications of the sentiment counts for the organization.
+
+        2. **Analyze Quarterly Sentiment Trends:**
+        - Identify significant changes or patterns, such as shifts in employee morale or performance perceptions.
+
+        3. **Provide Strategic Recommendations:**
+        - **Enhancing employee development initiatives** based on feedback.
+        - **Improving positive sentiment** across reviews.
+        - **Addressing and mitigating negative sentiment trends**.
+        - **Improving the performance review process** to better align with employee expectations and organizational goals.
+
+        4. **Quote Relevant Feedback:**
+        - Use specific names and quotes from the feedback provided where appropriate to illustrate points.
+
+        5. **Markdown Formatting:**
+        - Use **bold** for key names or phrases.
+        - Use bullet points or numbered lists for clarity.
+        - Highlight actionable recommendations clearly.
+
+        ### Deliverable
+
+        Provide a structured response focusing on actionable insights to improve overall organizational performance and employee morale, while ensuring the recommendations are generalized and not employee-specific.
+    `;
   };
 
   return (
@@ -183,7 +236,13 @@ export default function ExecutiveSummarizer({
                 </>
               ) : (
                 <div className="flex h-full" style={{ minHeight: "400px" }}>
-                  <LLMMarkdown content={aiSummary.markdownContent} />
+                  <div className="flex-1 bg-gray-100 p-4 rounded-md">
+                    <h1 className="text-2xl font-bold">Performance Insights and Actionable Feedback</h1>
+                    <p className="text-gray-600">
+                    Get key feedback themes, sentiment patterns, and actionable insights to enhance workplace strategies and foster growth.
+                    </p>
+                    <LLMMarkdown content={aiSummary.markdownContent} />
+                  </div>
                 </div>
               )}
             </div>
