@@ -216,7 +216,7 @@ export default function LLMTagging({ data, selectedColumn }: LLMTaggingProps) {
         <p className="text-gray-600 text-center mb-4">
             Leverage AI to categorize and enhance your dataset with meaningful tags, providing deeper insights into your data.
         </p>
-        <div className="mb-4 w-full">
+        <div className="mb-4 mt-8 w-full">
             <h3 className="text-lg font-semibold mb-2">Define Tags for Data Categorization</h3>
             <p className="text-gray-600 mb-2">
                 Add or modify tags to classify your data more effectively. Tags help identify and group related feedback.
