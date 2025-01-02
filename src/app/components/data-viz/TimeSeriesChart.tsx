@@ -6,15 +6,22 @@ ChartJS.register(LineElement, PointElement, LinearScale, Title, Tooltip, Legend,
 
 interface TimeSeriesChartProps {
     style?: React.CSSProperties;
+    data: { period: string; Positive: number; Neutral: number; Negative: number }[]; // Data format for sentiment trends
 }
 
-export default function TimeSeriesChart({ style }: TimeSeriesChartProps) {
-    const data = {
-        labels: ['Q1', 'Q2', 'Q3', 'Q4', 'Q5', 'Q6', 'Q7'],
+export default function TimeSeriesChart({ style, data }: TimeSeriesChartProps) {
+    // Extract labels and datasets from the input data
+    const labels = data.map((entry) => entry.period); // Periods as labels (e.g., Q1, Q2, Q3, ...)
+    const positiveData = data.map((entry) => entry.Positive);
+    const neutralData = data.map((entry) => entry.Neutral);
+    const negativeData = data.map((entry) => entry.Negative);
+
+    const chartData = {
+        labels, // Labels for the x-axis
         datasets: [
             {
                 label: 'Positive',
-                data: [300, 400, 350, 450, 500, 600, 700],
+                data: positiveData,
                 backgroundColor: 'rgba(76, 175, 80, 0.2)',
                 borderColor: '#4CAF50',
                 borderWidth: 2,
@@ -22,7 +29,7 @@ export default function TimeSeriesChart({ style }: TimeSeriesChartProps) {
             },
             {
                 label: 'Neutral',
-                data: [10, 20, 30, 100, 150, 130, 50],
+                data: neutralData,
                 backgroundColor: 'rgba(158, 158, 158, 0.2)',
                 borderColor: '#9E9E9E',
                 borderWidth: 2,
@@ -30,7 +37,7 @@ export default function TimeSeriesChart({ style }: TimeSeriesChartProps) {
             },
             {
                 label: 'Negative',
-                data: [400, 333, 250, 350, 200, 500, 400],
+                data: negativeData,
                 backgroundColor: 'rgba(244, 67, 54, 0.2)',
                 borderColor: '#F44336',
                 borderWidth: 2,
@@ -49,7 +56,7 @@ export default function TimeSeriesChart({ style }: TimeSeriesChartProps) {
             },
             tooltip: {
                 callbacks: {
-                    label: function(tooltipItem: TooltipItem<'line'>) {
+                    label: function (tooltipItem: TooltipItem<'line'>) {
                         return `${tooltipItem.dataset.label}: ${tooltipItem.raw}`;
                     },
                 },
@@ -59,8 +66,8 @@ export default function TimeSeriesChart({ style }: TimeSeriesChartProps) {
 
     return (
         <div style={style}>
-            <div style={{ position: 'relative', width: '100%', height: '95%'}}>
-                <Line data={data} options={options} />
+            <div style={{ position: 'relative', width: '100%', height: '95%' }}>
+                <Line data={chartData} options={options} />
             </div>
         </div>
     );

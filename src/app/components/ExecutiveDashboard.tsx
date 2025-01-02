@@ -1,5 +1,3 @@
-import DonutChart from "./data-viz/DonutChart";
-import TimeSeriesChart from "./data-viz/TimeSeriesChart";
 import PerPersonDatatable from "./data-viz/PerPersonDatatable";
 import LLMMarkdown from "./data-viz/LLMMarkdown";
 import HorizontalStackedBarGraph from "./data-viz/HorizontalStackedBarGraph";
@@ -15,13 +13,13 @@ export default function ExecutiveDashboard() {
                 <div className="flex gap-4">
                     <div className="bg-gray-100 rounded-md" style={{minWidth:400, minHeight:400,}}>
                         <div className="flex items-center justify-center h-full w-full">
-                            <DonutChart />
+                            {/* <DonutChart /> */}
                         </div>
                     </div>
                     <div className="flex-1 bg-gray-100 p-4 rounded-md" style={{ maxHeight: 400 }}>
                         <p className="flex text-center text-lg font-bold">Sentiment Trend</p>
                         <div className="flex items-center justify-center h-full w-full">
-                            <TimeSeriesChart style={{ width: '100%', height: '90%'}} />
+                            {/* <TimeSeriesChart style={{ width: '100%', height: '90%'}} /> */}
                         </div>
                     </div>
                 </div>

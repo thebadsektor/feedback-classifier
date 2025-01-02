@@ -5,13 +5,18 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-export default function DonutChart() {
+interface DonutChartProps {
+    counts: number[]; // Array of counts for Positive, Neutral, Negative
+    dataCount: number; // Total count for display
+}
+
+export default function DonutChart({ counts, dataCount }: DonutChartProps) {
     const data = {
         labels: ['Positive', 'Neutral', 'Negative'],
         datasets: [
             {
-                data: [300, 50, 100], // Example data values
-                backgroundColor: ['#4CAF50', '#9E9E9E', '#F44336'], // Modern, clean color palette
+                data: counts, // Use the counts passed as props
+                backgroundColor: ['#4CAF50', '#9E9E9E', '#F44336'],
                 hoverBackgroundColor: ['#45A049', '#8C8C8C', '#E53935'],
             },
         ],
@@ -27,7 +32,7 @@ export default function DonutChart() {
             },
             tooltip: {
                 callbacks: {
-                    label: function(tooltipItem: TooltipItem<'doughnut'>) {
+                    label: function (tooltipItem: TooltipItem<'doughnut'>) {
                         return `${tooltipItem.label}: ${tooltipItem.raw}`;
                     },
                 },
@@ -38,15 +43,19 @@ export default function DonutChart() {
     return (
         <div style={{ position: 'relative', width: '340px', height: '340px' }}>
             <Doughnut data={data} options={options} />
-            <div style={{ 
-                position: 'absolute', 
-                top: '55%', 
-                left: '50%', 
-                transform: 'translate(-50%, -50%)', 
-                textAlign: 'center' 
-            }}>
+            <div
+                style={{
+                    position: 'absolute',
+                    top: '55%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    textAlign: 'center',
+                }}
+            >
                 <h3>Data Count</h3>
-                <p className="text-2xl font-bold" style={{color: '#4CAF50'}}>9,999</p>
+                <p className="text-2xl font-bold" style={{ color: '#4CAF50' }}>
+                    {dataCount.toLocaleString()}
+                </p>
             </div>
         </div>
     );
