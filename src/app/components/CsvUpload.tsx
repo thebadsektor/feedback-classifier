@@ -32,7 +32,7 @@ export default function CsvUpload({ setDataFrame }: CsvUploadProps) {
       setFile(selectedFile);
       parseCsv(selectedFile);
     } else {
-      alert('Please select a valid CSV file');
+      alert('Invalid file. Please upload a valid CSV format.');
     }
   };
 
@@ -44,7 +44,7 @@ export default function CsvUpload({ setDataFrame }: CsvUploadProps) {
         const rows = results.data.slice(1) as string[][];
 
         if (!headers || rows.length === 0) {
-          alert('The CSV file appears to be empty or invalid.');
+          alert('The uploaded file seems to be empty or improperly formatted. Please check and try again.');
           setCsvData(null);
           setIsProcessing(false);
           return;
@@ -56,7 +56,7 @@ export default function CsvUpload({ setDataFrame }: CsvUploadProps) {
       },
       error: (error) => {
         console.error('Error parsing CSV:', error);
-        alert('An error occurred while parsing the CSV. Check the console for details.');
+        alert('The uploaded file seems to be empty or improperly formatted. Please check and try again.');
         setIsProcessing(false);
       },
       header: false,
@@ -97,12 +97,9 @@ export default function CsvUpload({ setDataFrame }: CsvUploadProps) {
 
   return (
     <div className="w-full p-6 bg-white rounded-lg shadow-md">
-      <div className="flex flex-col gap-4">
-          <h1 className="text-2xl font-bold">Data Processing</h1>
-      </div>
-      <h3 className="text-lg font-semibold mb-2 text-center">Upload CSV</h3>
+      <h3 className="text-lg font-semibold mb-2 text-center">Upload Your CSV File</h3>
       <p className="text-gray-600 text-center mb-4">
-          This uploads a CSV file and allows you to select columns to process.
+        Upload your CSV file to select and process data columns for analysis.
       </p>
       <div className="flex flex-col items-center justify-center min-h-40 gap-4">
         <label className="relative cursor-pointer bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md transition-colors">
@@ -119,8 +116,9 @@ export default function CsvUpload({ setDataFrame }: CsvUploadProps) {
 
         {csvData && (
           <div className="w-full mt-4">
-            <h3 className="text-lg font-semibold mb-2 text-center">Select columns to process:</h3>
-            <div className="flex justify-center flex-wrap gap-2 mb-4">
+            <h3 className="text-lg font-semibold mb-2 text-center">Choose Columns to Include in DataFrame:</h3>
+            <p className="text-gray-600 text-center">Check the columns you want to include in the generated DataFrame. Unselected columns will be excluded.</p>
+            <div className="flex justify-center flex-wrap gap-2 mb-8 mt-8">
               {csvData.headers.map((header) => (
                 <label key={header} className="flex items-center space-x-2">
                   <input
@@ -151,7 +149,10 @@ export default function CsvUpload({ setDataFrame }: CsvUploadProps) {
             <p className="text-gray-600">
               Total Rows: {processedData.length}
             </p>
-            <h3 className="text-lg font-semibold mb-2">Dataframe Preview:</h3>
+            <h3 className="text-lg font-semibold mt-8">Processed Dataframe</h3>
+            <p className="text-gray-600 text-center">
+              View the processed data in the DataFrame. Use pagination to explore the data.
+            </p>
             <div style={{ height: 400, width: '100%' }}>
               <DataGrid
                 rows={processedData}

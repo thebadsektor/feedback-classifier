@@ -153,17 +153,17 @@ const SentimentAnalyzer: React.FC<SentimentAnalyzerProps> = ({ dataFrame }) => {
   return (
     <div className="w-full p-6 bg-white rounded-lg shadow-md">
       <h3 className="text-lg font-semibold mb-2 text-center">
-        Sentiment Analysis
+        Sentiment Insights and Analysis
       </h3>
       <p className="text-gray-600 text-center">
-        This component analyzes the sentiment of each record in the dataframe.
+      Gain insights into sentiment trends and patterns by analyzing the records in your dataset. Select a column and mode to begin.
       </p>
 
       {dataFrame && (
         <>
           <div className="mt-4">
             <h3 className="text-lg font-semibold mb-2">
-              Select Column for Sentiment Analysis:
+              Choose a Column for Sentiment Analysis
             </h3>
             {dataFrame.columns.map((column) => (
               <div key={column}>
@@ -182,7 +182,7 @@ const SentimentAnalyzer: React.FC<SentimentAnalyzerProps> = ({ dataFrame }) => {
           </div>
           <div className="mt-4">
             <h4 className="text-lg font-semibold mb-2">
-              Select Mode for Sentiment Analysis:
+              Pick an Analysis Method
             </h4>
             <div className="flex flex-col">
               <label className="flex items-center">
@@ -194,7 +194,7 @@ const SentimentAnalyzer: React.FC<SentimentAnalyzerProps> = ({ dataFrame }) => {
                   defaultChecked
                   onChange={() => setSelectedMode("sentiment-rule-based")}
                 />
-                Sentiment (Rule Based)
+                Rule-Based Sentiment Analysis
               </label>
               <label className="flex items-center">
                 <input
@@ -204,7 +204,7 @@ const SentimentAnalyzer: React.FC<SentimentAnalyzerProps> = ({ dataFrame }) => {
                   className="mr-2"
                   onChange={() => setSelectedMode("HuggingFace API")}
                 />
-                HuggingFace API
+                HuggingFace Sentiment API
               </label>
               <label className="flex items-center">
                 <input
@@ -214,7 +214,7 @@ const SentimentAnalyzer: React.FC<SentimentAnalyzerProps> = ({ dataFrame }) => {
                   className="mr-2"
                   onChange={() => setSelectedMode("Gemini")}
                 />
-                Gemini
+                Gemini AI Sentiment Analysis
               </label>
             </div>
           </div>
@@ -229,10 +229,10 @@ const SentimentAnalyzer: React.FC<SentimentAnalyzerProps> = ({ dataFrame }) => {
                 <>
                   <CircularProgress size={24} className="mr-2" />{" "}
                   {/* Spinner */}
-                  Analyzing Sentiment...
+                  Performing Sentiment Analysis...
                 </>
               ) : (
-                "Run Sentiment Analysis"
+                "Start Sentiment Analysis"
               )}
             </button>
           </div>
@@ -241,9 +241,12 @@ const SentimentAnalyzer: React.FC<SentimentAnalyzerProps> = ({ dataFrame }) => {
 
       {updatedDataFrame && (
         <>
-          <h3 className="text-lg font-semibold mb-2">
+          <h3 className="text-lg font-semibold mb-2 text-center mt-8">
             Sentiment Analysis Results
           </h3>
+          <p className="text-gray-600 text-center">
+          Below are the results of the sentiment analysis for the selected column. Use pagination to explore the data.
+          </p>
           <div style={{ height: 400, width: '100%' }}>
             <DataGrid
               rows={updatedDataFrame.rows}

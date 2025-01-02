@@ -174,10 +174,10 @@ export default function ExecutiveSummarizer({
   return (
     <>
       <h3 className="text-lg font-semibold mb-2 mt-16 text-center">
-        Executive Summary
+      Executive Summary Generator
       </h3>
       <p className="text-gray-600 text-center">
-        This component generates an executive summary of the data.
+      Gain actionable insights from employee feedback and sentiment analysis. Use this tool to identify patterns and make informed decisions.
       </p>
 
       <div className="flex justify-center mt-4">
@@ -185,14 +185,17 @@ export default function ExecutiveSummarizer({
           onClick={() => handleGenerateSummary(dataFrame)}
           className="flex items-center bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md transition-colors"
         >
-          Generate Executive Summary
+          Generate Summary Report
         </button>
       </div>
 
       {summaryResult?.sentimentCounts && (
         <>
           <div className="flex flex-col gap-4 mt-10">
-            <h1 className="text-2xl font-bold">Executive Summary</h1>
+            <h1 className="text-2xl font-bold">Sentiment Statistics Overview</h1>
+            <p className="text-gray-600">
+            Review the aggregated sentiment counts, providing a clear snapshot of positive, neutral, and negative feedback across the dataset.
+            </p>
           </div>
           <div className="mt-4">
             <div className="flex gap-4">
@@ -227,12 +230,25 @@ export default function ExecutiveSummarizer({
             <div className="flex justify-center bg-gray-100 p-4 rounded-md mt-4">
               {!aiSummary ? (
                 <>
+                <div className="flex h-full" style={{ minHeight: "400px" }}>
+                  <div className="flex-1">
+                  <h3 className="text-lg font-semibold mb-2 mt-16 text-center">
+                  Generate Performance Insights
+                  </h3>
+                    <p className="text-gray-600 text-center">
+                    Generate a comprehensive summary of your data, providing actionable insights to enhance workplace strategies and foster growth.
+                    </p>
+                    <div className="flex flex-col items-center justify-center min-h-40 gap-4">
+
                   <GeminiAPI
                     inputData={generateLLMPrompt()}
                     onResult={handleLLMResult}
-                    buttonLabel="Generate Sentiment Summary"
-                    loadingLabel="Generating Sentiment Summary"
+                    buttonLabel="Generate Insights"
+                    loadingLabel="Generating Insights..."
                   />
+                    </div>
+                  </div>
+                  </div>
                 </>
               ) : (
                 <div className="flex h-full" style={{ minHeight: "400px" }}>
