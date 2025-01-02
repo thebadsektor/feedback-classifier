@@ -6,6 +6,11 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Papa from 'papaparse';
 import ExecutiveSummarizer from "./ExecutiveSummarizer";
 import { CustomDataFrame } from '../../types/Dataframe'; // Import CustomDataFrame
+import HorizontalStackedBarGraph from './data-viz/HorizontalStackedBarGraph';
+import React from 'react';
+import { DataGrid, GridColDef } from '@mui/x-data-grid'; // Import DataGrid
+
+
 // Define a new type for tagging results
 type TaggingResult = {
     tags: string[];
@@ -204,28 +209,24 @@ export default function LLMTagging({ data, selectedColumn }: LLMTaggingProps) {
         {isTaggingDone && (
             <>
                 <h3 className="text-lg font-semibold mb-2 text-left w-full">Data Preview (First 5 Rows)</h3>
-                <TableContainer component={Paper} style={{ maxHeight: 400, overflow: 'auto' }}>
-                    <Table>
-                        <TableHead>
-                            <TableRow>
-                                {newData.length > 0 && Object.keys(newData[0]).map((key) => (
-                                    <TableCell key={key}>{key}</TableCell>
-                                ))}
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {newData.slice(0, 5).map((row, index) => (
-                                <TableRow key={index}>
-                                    {Object.keys(row).map((key) => (
-                                        <TableCell key={key}>
-                                            {row[key] !== undefined ? row[key].toString() : "N/A"}
-                                        </TableCell>
-                                    ))}
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
+                <div style={{ height: 400, width: '100%' }}>
+                    <DataGrid
+                        rows={newData.slice(0, 5)} // Display only the first 5 rows
+                        columns={Object.keys(newData[0] || {}).map((key) => ({
+                            field: key,
+                            headerName: key.charAt(0).toUpperCase() + key.slice(1), // Capitalize the header
+                            width: 150, // Set a default width
+                        }))}
+                        pageSize={5}
+                        rowsPerPageOptions={[5]}
+                        disableSelectionOnClick
+                        components={{
+                            NoRowsOverlay: () => (
+                                <div style={{ textAlign: 'center', padding: '20px' }}>No data available</div>
+                            ),
+                        }}
+                    />
+                </div>
 
                 {/* Download Button */}
                 <div className="flex justify-end mt-4 w-full">
@@ -235,6 +236,9 @@ export default function LLMTagging({ data, selectedColumn }: LLMTaggingProps) {
                     >
                         Download Enhanced Dataframe as CSV
                     </a>
+                </div>
+                <div className="flex justify-center bg-gray-100 p-4 rounded-md mt-4">
+                    <HorizontalStackedBarGraph style={{ width: '100%', height: '100%' }}/>
                 </div>
 
                 {/* Add ExecutiveSummarizer with the tagged data */}

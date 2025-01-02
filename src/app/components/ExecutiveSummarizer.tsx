@@ -3,7 +3,6 @@ import { DataFrame } from "@/types/Dataframe";
 import DonutChart from "./data-viz/DonutChart";
 import TimeSeriesChart from "./data-viz/TimeSeriesChart";
 import LLMMarkdown from "./data-viz/LLMMarkdown";
-import PerPersonDatatable from "./data-viz/PerPersonDatatable";
 import { GoogleAIResponse } from "@/types/GoogleAIResponse";
 import GeminiAPI from "./GeminiAPI";
 
@@ -173,9 +172,6 @@ export default function ExecutiveSummarizer({
                   />
                 </div>
               </div>
-            </div>
-            <div className="flex justify-center bg-white p-4 rounded-md mt-4">
-                <PerPersonDatatable/>
             </div>
             <div className="flex justify-center bg-gray-100 p-4 rounded-md mt-4">
               {!aiSummary ? (
