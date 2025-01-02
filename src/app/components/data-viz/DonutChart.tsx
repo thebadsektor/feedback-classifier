@@ -45,8 +45,8 @@ export default function DonutChart() {
                 transform: 'translate(-50%, -50%)', 
                 textAlign: 'center' 
             }}>
-                <h2>Total Sentiment</h2>
-                <h3>9,999</h3>
+                <h3>Data Count</h3>
+                <p className="text-2xl font-bold" style={{color: '#4CAF50'}}>9,999</p>
             </div>
         </div>
     );

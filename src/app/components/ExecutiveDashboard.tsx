@@ -97,9 +97,10 @@ export default function ExecutiveDashboard() {
                             <DonutChart />
                         </div>
                     </div>
-                    <div className="flex-1 bg-gray-100 p-4 rounded-md" style={{ minHeight: 400 }}>
+                    <div className="flex-1 bg-gray-100 p-4 rounded-md" style={{ maxHeight: 400 }}>
+                        <p className="flex text-center text-lg font-bold">Sentiment Trend</p>
                         <div className="flex items-center justify-center h-full w-full">
-                            <TimeSeriesChart style={{ width: '100%', height: '100%' }} />
+                            <TimeSeriesChart style={{ width: '100%', height: '90%'}} />
                         </div>
                     </div>
                 </div>

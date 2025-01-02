@@ -57,6 +57,7 @@ const HorizontalStackedBarGraph: React.FC<HorizontalStackedBarGraphProps> = ({ s
             x: {
                 stacked: true,
                 display: false,
+                barThickness: 5,
             },
             y: {
                 stacked: true,

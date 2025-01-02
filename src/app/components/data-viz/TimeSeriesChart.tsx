@@ -41,6 +41,7 @@ export default function TimeSeriesChart({ style }: TimeSeriesChartProps) {
 
     const options = {
         responsive: true,
+        maintainAspectRatio: false,
         plugins: {
             legend: {
                 display: true,
@@ -58,8 +59,7 @@ export default function TimeSeriesChart({ style }: TimeSeriesChartProps) {
 
     return (
         <div style={style}>
-            <p>Time Series Chart</p>
-            <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+            <div style={{ position: 'relative', width: '100%', height: '95%'}}>
                 <Line data={data} options={options} />
             </div>
         </div>
