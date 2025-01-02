@@ -37,7 +37,6 @@ export default function ExecutiveSummarizer({
   } | null>(null);
 
   const [aiSummary, setAiSummary] = useState<SentimentAISummary | null>(null);
-  const [showGeminiAPI, setShowGeminiAPI] = useState(false); // Tracks if GeminiAPI should be shown
 
   const handleGenerateSummary = (dataFrame: DataFrame) => {
     // Validate the input DataFrame
@@ -90,7 +89,6 @@ export default function ExecutiveSummarizer({
   const handleLLMResult = (result: GoogleAIResponse) => {
     const markdownContent = result.response.text(); // Adjust based on the actual structure
     setAiSummary({ markdownContent }); // Set the AI summary with the markdown content
-    setShowGeminiAPI(false); // Hide GeminiAPI after getting the result
     console.log("Generated Sentiment Summary:", markdownContent);
   };
 

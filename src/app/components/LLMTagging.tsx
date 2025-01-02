@@ -1,14 +1,13 @@
 import { useState } from 'react';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { TagsInput } from 'react-tag-input-component';
-import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 import Papa from 'papaparse';
 import ExecutiveSummarizer from "./ExecutiveSummarizer";
 import { CustomDataFrame } from '../../types/Dataframe'; // Import CustomDataFrame
 import HorizontalStackedBarGraph from './data-viz/HorizontalStackedBarGraph';
 import React from 'react';
-import { DataGrid, GridColDef } from '@mui/x-data-grid'; // Import DataGrid
+import { DataGrid } from '@mui/x-data-grid'; // Import DataGrid
 
 
 // Define a new type for tagging results
@@ -217,14 +216,9 @@ export default function LLMTagging({ data, selectedColumn }: LLMTaggingProps) {
                             headerName: key.charAt(0).toUpperCase() + key.slice(1), // Capitalize the header
                             width: 150, // Set a default width
                         }))}
-                        pageSize={5}
-                        rowsPerPageOptions={[5]}
-                        disableSelectionOnClick
-                        components={{
-                            NoRowsOverlay: () => (
-                                <div style={{ textAlign: 'center', padding: '20px' }}>No data available</div>
-                            ),
-                        }}
+                        pagination
+                        paginationModel={{ pageSize: 5, page: 0 }} // Use paginationModel for pagination
+                        disableRowSelectionOnClick
                     />
                 </div>
 
