@@ -16,6 +16,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai"; // Import the Gemini
 import { GoogleAIResponse } from "@/types/GoogleAIResponse";
 import LLMTagging from "./LLMTagging"; // Import the LLMTagging component
 import CircularProgress from "@mui/material/CircularProgress"; // Import CircularProgress for spinner
+import { DataGrid, GridPaginationModel } from '@mui/x-data-grid'; // Import DataGrid and GridPaginationModel
 
 interface SentimentAnalyzerProps {
   dataFrame: DataFrame | null;
@@ -31,6 +32,10 @@ const SentimentAnalyzer: React.FC<SentimentAnalyzerProps> = ({ dataFrame }) => {
     "sentiment-rule-based"
   );
   const [isLLMTaggingVisible, setIsLLMTaggingVisible] = useState(false);
+  const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
+    page: 0,
+    pageSize: 5,
+  });
 
   const analyzeSentiment = async () => {
     console.log("Starting sentiment analysis...");
@@ -246,33 +251,23 @@ const SentimentAnalyzer: React.FC<SentimentAnalyzerProps> = ({ dataFrame }) => {
       {updatedDataFrame && (
         <>
           <h3 className="text-lg font-semibold mb-2">
-            Sentiment Analysis Results (First 5 Rows)
+            Sentiment Analysis Results
           </h3>
-          <TableContainer
-            component={Paper}
-            style={{ maxHeight: 400, overflow: "auto" }}
-          >
-            <Table>
-              <TableHead>
-                <TableRow>
-                  {updatedDataFrame.columns.map((col) => (
-                    <TableCell key={col} style={{ border: '1px solid #ccc' }}>{col}</TableCell>
-                  ))}
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {updatedDataFrame.rows.slice(0, 5).map((row, index) => (
-                  <TableRow key={index}>
-                    {updatedDataFrame.columns.map((col) => (
-                      <TableCell key={col} style={{ border: '1px solid #ccc' }}>
-                        {row[col] !== undefined ? row[col].toString() : "N/A"}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+          <div style={{ height: 400, width: '100%' }}>
+            <DataGrid
+              rows={updatedDataFrame.rows}
+              columns={updatedDataFrame.columns.map((col) => ({
+                field: col,
+                headerName: col,
+                width: 150,
+              }))}
+              pagination
+              paginationModel={paginationModel} // Set the pagination model
+              onPaginationModelChange={setPaginationModel} // Handle pagination changes
+              pageSizeOptions={[5, 10, 25]} // Pagination options
+              loading={false}
+            />
+          </div>
           <div className="mt-8">
             {isLLMTaggingVisible && (
               <LLMTagging

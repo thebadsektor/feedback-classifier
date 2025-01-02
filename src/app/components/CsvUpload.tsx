@@ -5,6 +5,7 @@ import { ChangeEvent, useState } from 'react';
 import Papa from 'papaparse';
 import { DataFrame } from 'danfojs';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
+import { DataGrid } from '@mui/x-data-grid';
 
 interface CsvUploadProps {
   setDataFrame: (dataFrame: DataFrame | null) => void;
@@ -21,6 +22,10 @@ export default function CsvUpload({ setDataFrame }: CsvUploadProps) {
   const [selectedColumns, setSelectedColumns] = useState<string[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [processedData, setProcessedData] = useState<Record<string, string | number>[]>([]);
+  const [paginationModel, setPaginationModel] = useState({
+    page: 0,
+    pageSize: 5,
+  });
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.[0];
@@ -145,29 +150,25 @@ export default function CsvUpload({ setDataFrame }: CsvUploadProps) {
         {processedData.length > 0 && (
           <>
             <p className="text-gray-600">
-              Total Rows: 100
+              Total Rows: {processedData.length}
             </p>
-            <h3 className="text-lg font-semibold mb-2">Dataframe Preview (First 5 Rows):</h3>
-            <TableContainer component={Paper} style={{ maxHeight: 400, overflow: 'auto' }}>
-              <Table>
-                  <TableHead>
-                    <TableRow>
-                      {Object.keys(processedData[0]).map((key) => (
-                        <TableCell key={key} style={{ border: '1px solid #ccc' }}>{key}</TableCell>
-                      ))}
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {processedData.slice(0, 5).map((row, index) => (
-                      <TableRow key={index}>
-                        {Object.values(row).map((value, idx) => (
-                          <TableCell key={idx} style={{ border: '1px solid #ccc' }}>{value}</TableCell>
-                        ))}
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-            </TableContainer>
+            <h3 className="text-lg font-semibold mb-2">Dataframe Preview:</h3>
+            <div style={{ height: 400, width: '100%' }}>
+              <DataGrid
+                rows={processedData}
+                columns={selectedColumns.map((header) => ({
+                  field: header,
+                  headerName: header,
+                  width: 150,
+                }))}
+                pagination
+                paginationMode="client"
+                paginationModel={paginationModel}
+                onPaginationModelChange={setPaginationModel}
+                pageSizeOptions={[5, 10, 25]}
+                loading={false}
+              />
+            </div>
           </>
         )}
       </div>
