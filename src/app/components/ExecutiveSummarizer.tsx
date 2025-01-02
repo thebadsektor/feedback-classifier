@@ -176,28 +176,12 @@ export default function ExecutiveSummarizer({
               <div className="flex justify-center bg-gray-100 p-4 rounded-md mt-4">
                 {!aiSummary ? (
                   <>
-                    {!showGeminiAPI ? (
-                      <button
-                        onClick={() => setShowGeminiAPI(true)}
-                        disabled={
-                          !summaryResult?.sentimentCounts ||
-                          !summaryResult?.sentimentTrends
-                        }
-                        className={`${
-                          !summaryResult?.sentimentCounts ||
-                          !summaryResult?.sentimentTrends
-                            ? "bg-gray-300 cursor-not-allowed"
-                            : "bg-blue-500 hover:bg-blue-600"
-                        } text-white px-4 py-2 rounded-md transition-colors`}
-                      >
-                        Generate Sentiment Summary
-                      </button>
-                    ) : (
-                      <GeminiAPI
+                    <GeminiAPI
                         inputData={generateLLMPrompt()}
                         onResult={handleLLMResult}
+                        buttonLabel="Generate Sentiment Summary"
+                        loadingLabel="Generating Sentiment Summary"
                       />
-                    )}
                   </>
                 ) : (
                   <div className="flex h-full" style={{ minHeight: "400px" }}>
