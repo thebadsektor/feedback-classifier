@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { CircularProgress } from '@mui/material';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { GoogleAIResponse } from '../../types/GoogleAIResponse';
+import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 
 interface GeminiAPIProps {
   inputData: string; // This will be the prompt for the AI
@@ -48,7 +49,10 @@ const GeminiAPI = ({ inputData, onResult, buttonLabel, loadingLabel }: GeminiAPI
             {loadingLabel}
           </>
         ) : (
-          buttonLabel
+          <>
+            <AutoAwesomeIcon className="mr-2" />
+            {buttonLabel}
+          </>
         )}
       </button>
       {gptResponse && (

@@ -8,6 +8,7 @@ import { GoogleAIResponse } from "@/types/GoogleAIResponse";
 import LLMTagging from "./LLMTagging"; // Import the LLMTagging component
 import CircularProgress from "@mui/material/CircularProgress"; // Import CircularProgress for spinner
 import { DataGrid, GridPaginationModel } from '@mui/x-data-grid'; // Import DataGrid and GridPaginationModel
+import PlayArrowIcon from '@mui/icons-material/PlayArrow'; // Import the Play icon
 
 interface SentimentAnalyzerProps {
   dataFrame: DataFrame | null;
@@ -232,7 +233,10 @@ const SentimentAnalyzer: React.FC<SentimentAnalyzerProps> = ({ dataFrame }) => {
                   Performing Sentiment Analysis...
                 </>
               ) : (
-                "Start Sentiment Analysis"
+                <>
+                  <PlayArrowIcon className="mr-2" />
+                  Start Sentiment Analysis
+                </>
               )}
             </button>
           </div>

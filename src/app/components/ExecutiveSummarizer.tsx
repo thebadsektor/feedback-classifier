@@ -5,6 +5,7 @@ import TimeSeriesChart from "./data-viz/TimeSeriesChart";
 import LLMMarkdown from "./data-viz/LLMMarkdown";
 import { GoogleAIResponse } from "@/types/GoogleAIResponse";
 import GeminiAPI from "./GeminiAPI";
+import BarChartIcon from '@mui/icons-material/BarChart';
 
 interface ExecutiveSummarizerProps {
   dataFrame: DataFrame;
@@ -181,6 +182,7 @@ export default function ExecutiveSummarizer({
           onClick={() => handleGenerateSummary(dataFrame)}
           className="flex items-center bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md transition-colors"
         >
+          <BarChartIcon className="mr-2" />
           Generate Sentiment Statistics
         </button>
       </div>
